@@ -2,6 +2,7 @@ package chess;
 
 import chess.moveRules.BishopMoveRule;
 import chess.moveRules.KingMoveRule;
+import chess.moveRules.KnightMoveRule;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -90,6 +91,8 @@ public class ChessPiece {
                 moveList = cur_bishop.getMoveList();
                 break;
             case KNIGHT:
+                KnightMoveRule cur_knight = new KnightMoveRule(myPosition,board);
+                moveList = cur_knight.getMoveList();
                 break;
             case ROOK:
                 break;
