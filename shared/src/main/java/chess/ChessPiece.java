@@ -99,6 +99,8 @@ public class ChessPiece {
                 moveList = cur_rook.getMoveList();
                 break;
             case PAWN:
+                PawnMoveRule cur_pawn = new PawnMoveRule(myPosition,board);
+                moveList = cur_pawn.getMoveList();
                 break;
         }
 
