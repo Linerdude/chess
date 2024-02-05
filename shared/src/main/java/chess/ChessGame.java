@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -9,6 +10,8 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessGame {
+
+    private ChessBoard curBoard;
 
     public ChessGame() {
 
@@ -46,7 +49,22 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        ChessPiece curPiece = curBoard.getPiece(startPosition);
+        if(curPiece == null){
+            return null;
+        }
+        Collection<ChessMove> curPieceMoves = curPiece.pieceMoves(curBoard,startPosition);
+        ArrayList<ChessMove> validPieceMoves = new ArrayList<ChessMove>();
+        for (ChessMove curMove : curPieceMoves){
+            ChessPosition endPos = curMove.getEndPosition();
+            if (curBoard.getPiece(endPos) == null){
+                validPieceMoves.add(curMove);
+            }
+            else if (curBoard.getPiece(endPos).getTeamColor() != curBoard.getPiece(startPosition).getTeamColor()){
+                validPieceMoves.add(curMove);
+            }
+        }
+        return validPieceMoves;
     }
 
     /**
@@ -96,7 +114,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
+        curBoard = board;
     }
 
     /**
@@ -105,6 +123,6 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        throw new RuntimeException("Not implemented");
+        return curBoard;
     }
 }
