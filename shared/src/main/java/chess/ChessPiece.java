@@ -76,34 +76,32 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        ArrayList<ChessMove> moveList = new ArrayList<ChessMove>();
-        switch(type){
-            case KING:
-                KingMoveRule cur_king = new KingMoveRule(myPosition,board);
-                moveList = cur_king.getMoveList();
-                break;
-            case QUEEN:
-                QueenMoveRule cur_queen = new QueenMoveRule(myPosition,board);
-                moveList = cur_queen.getMoveList();
-                break;
-            case BISHOP:
-                BishopMoveRule cur_bishop = new BishopMoveRule(myPosition,board);
-                moveList = cur_bishop.getMoveList();
-                break;
-            case KNIGHT:
-                KnightMoveRule cur_knight = new KnightMoveRule(myPosition,board);
-                moveList = cur_knight.getMoveList();
-                break;
-            case ROOK:
-                RookMoveRule cur_rook = new RookMoveRule(myPosition,board);
-                moveList = cur_rook.getMoveList();
-                break;
-            case PAWN:
-                PawnMoveRule cur_pawn = new PawnMoveRule(myPosition,board);
-                moveList = cur_pawn.getMoveList();
-                break;
-        }
 
-        return moveList;
+        return switch (type) {
+            case KING -> {
+                KingMoveRule cur_king = new KingMoveRule(myPosition, board);
+                yield cur_king.getMoveList();
+            }
+            case QUEEN -> {
+                QueenMoveRule cur_queen = new QueenMoveRule(myPosition, board);
+                yield cur_queen.getMoveList();
+            }
+            case BISHOP -> {
+                BishopMoveRule cur_bishop = new BishopMoveRule(myPosition, board);
+                yield cur_bishop.getMoveList();
+            }
+            case KNIGHT -> {
+                KnightMoveRule cur_knight = new KnightMoveRule(myPosition, board);
+                yield cur_knight.getMoveList();
+            }
+            case ROOK -> {
+                RookMoveRule cur_rook = new RookMoveRule(myPosition, board);
+                yield cur_rook.getMoveList();
+            }
+            case PAWN -> {
+                PawnMoveRule cur_pawn = new PawnMoveRule(myPosition, board);
+                yield cur_pawn.getMoveList();
+            }
+        };
     }
 }
