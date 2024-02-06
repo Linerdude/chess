@@ -14,6 +14,11 @@ public class ChessBoard {
         
     }
 
+    public ChessBoard(ChessBoard copy){
+        this.squares = new ChessPiece[8][8];
+        this.squares = copy.squares.clone();
+    }
+
     /**
      * Adds a chess piece to the chessboard
      *
@@ -82,11 +87,6 @@ public class ChessBoard {
         if (this == o) return true;
         if (!(o instanceof ChessBoard that)) return false;
         return Arrays.deepEquals(squares, that.squares);
-    }
-
-    @Override
-    protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
     }
 
     @Override

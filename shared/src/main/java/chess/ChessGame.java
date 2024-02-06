@@ -75,22 +75,28 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        ChessBoard newBoard;
-        try {
-            newBoard = (ChessBoard) curBoard.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
-        }
-        int endRow = move.getEndPosition().getRow() - 1;
-        int endCol = move.getEndPosition().getColumn() - 1;
+        ChessBoard newBoard = new ChessBoard(curBoard);
+//        int endRow = move.getEndPosition().getRow() - 1;
+//        int endCol = move.getEndPosition().getColumn() - 1;
 
         ChessPiece curPiece = curBoard.getPiece(move.getStartPosition());
         newBoard.addPiece(move.endPosition, curPiece);
         newBoard.addPiece(move.startPosition,null);
 
+        TeamColor curTeamColor = curBoard.getPiece(move.startPosition).getTeamColor();
+        TeamColor otherTeam;
+        if (curTeamColor == TeamColor.WHITE){
+            otherTeam = TeamColor.BLACK;
+        } else {
+            otherTeam = TeamColor.WHITE;
+        }
+
+        if (isInCheck(otherTeam) || teamTurn != curTeamColor){
+            throw new InvalidMoveException();
+        }
         curBoard = newBoard;
 
-        
+
 
     }
 
