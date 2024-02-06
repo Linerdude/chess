@@ -12,6 +12,7 @@ import java.util.Collection;
 public class ChessGame {
 
     private ChessBoard curBoard;
+    private TeamColor teamTurn;
 
     public ChessGame() {
 
@@ -21,7 +22,7 @@ public class ChessGame {
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        throw new RuntimeException("Not implemented");
+        return teamTurn;
     }
 
     /**
@@ -30,7 +31,7 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        throw new RuntimeException("Not implemented");
+        teamTurn = team;
     }
 
     /**
@@ -74,7 +75,23 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        ChessBoard newBoard;
+        try {
+            newBoard = (ChessBoard) curBoard.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+        int endRow = move.getEndPosition().getRow() - 1;
+        int endCol = move.getEndPosition().getColumn() - 1;
+
+        ChessPiece curPiece = curBoard.getPiece(move.getStartPosition());
+        newBoard.addPiece(move.endPosition, curPiece);
+        newBoard.addPiece(move.startPosition,null);
+
+        curBoard = newBoard;
+
+        
+
     }
 
     /**
