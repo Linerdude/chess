@@ -16,7 +16,13 @@ public class ChessBoard {
 
     public ChessBoard(ChessBoard copy){
         this.squares = new ChessPiece[8][8];
-        this.squares = copy.squares.clone();
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (copy.squares[i][j] != null) {
+                    this.squares[i][j] = new ChessPiece(copy.squares[i][j]);
+                }
+            }
+        }
     }
 
     /**
