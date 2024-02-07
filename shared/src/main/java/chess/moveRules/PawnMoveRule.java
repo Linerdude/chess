@@ -38,18 +38,43 @@ public class PawnMoveRule {
                 moveList.add(in_front_double_move);
             }
         }
-        ChessPosition in_front_right_pos = new ChessPosition(cur_row+1+is_white,cur_col+1+is_white);
-        if (board.getPiece(in_front_right_pos) != null){
-            if(board.getPiece(in_front_right_pos).getTeamColor() != board.getPiece(startPosition).getTeamColor()){
-                ChessMove in_front_right_move = new ChessMove(startPosition,in_front_right_pos,null);
-                moveList.add(in_front_right_move);
+        if (is_white == 1) {
+            if (!(cur_col > 6)) {
+                ChessPosition in_front_right_pos = new ChessPosition(cur_row + 1 + is_white, cur_col + 1 + is_white);
+                if (board.getPiece(in_front_right_pos) != null) {
+                    if (board.getPiece(in_front_right_pos).getTeamColor() != board.getPiece(startPosition).getTeamColor()) {
+                        ChessMove in_front_right_move = new ChessMove(startPosition, in_front_right_pos, null);
+                        moveList.add(in_front_right_move);
+                    }
+                }
             }
-        }
-        ChessPosition in_front_left_pos = new ChessPosition(cur_row+1+is_white,cur_col+1-is_white);
-        if (board.getPiece(in_front_left_pos) != null) {
-            if (board.getPiece(in_front_left_pos).getTeamColor() != board.getPiece(startPosition).getTeamColor()) {
-                ChessMove in_front_left_move = new ChessMove(startPosition, in_front_left_pos, null);
-                moveList.add(in_front_left_move);
+            if (!(cur_col < 1)) {
+                ChessPosition in_front_left_pos = new ChessPosition(cur_row + 1 + is_white, cur_col + 1 - is_white);
+                if (board.getPiece(in_front_left_pos) != null) {
+                    if (board.getPiece(in_front_left_pos).getTeamColor() != board.getPiece(startPosition).getTeamColor()) {
+                        ChessMove in_front_left_move = new ChessMove(startPosition, in_front_left_pos, null);
+                        moveList.add(in_front_left_move);
+                    }
+                }
+            }
+        } else {
+            if (!(cur_col < 1)) {
+                ChessPosition in_front_right_pos = new ChessPosition(cur_row + 1 + is_white, cur_col + 1 + is_white);
+                if (board.getPiece(in_front_right_pos) != null) {
+                    if (board.getPiece(in_front_right_pos).getTeamColor() != board.getPiece(startPosition).getTeamColor()) {
+                        ChessMove in_front_right_move = new ChessMove(startPosition, in_front_right_pos, null);
+                        moveList.add(in_front_right_move);
+                    }
+                }
+            }
+            if (!(cur_col > 6)) {
+                ChessPosition in_front_left_pos = new ChessPosition(cur_row + 1 + is_white, cur_col + 1 - is_white);
+                if (board.getPiece(in_front_left_pos) != null) {
+                    if (board.getPiece(in_front_left_pos).getTeamColor() != board.getPiece(startPosition).getTeamColor()) {
+                        ChessMove in_front_left_move = new ChessMove(startPosition, in_front_left_pos, null);
+                        moveList.add(in_front_left_move);
+                    }
+                }
             }
         }
         ArrayList<ChessMove> newMoveList = new ArrayList<>(moveList);
