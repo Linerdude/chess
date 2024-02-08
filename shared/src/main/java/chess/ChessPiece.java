@@ -5,6 +5,7 @@ import chess.moveRules.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.HashSet;
 
 /**
  * Represents a single chess piece
@@ -80,33 +81,36 @@ public class ChessPiece {
      *
      * @return Collection of valid moves
      */
-    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+    public HashSet<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+        HashSet<ChessMove> moves = new HashSet<>();
 
-        return switch (type) {
+        switch (type) {
             case KING -> {
                 KingMoveRule cur_king = new KingMoveRule(myPosition, board);
-                yield cur_king.getMoveList();
+                moves.addAll(cur_king.getMoveList());
             }
             case QUEEN -> {
                 QueenMoveRule cur_queen = new QueenMoveRule(myPosition, board);
-                yield cur_queen.getMoveList();
+                moves.addAll(cur_queen.getMoveList());
             }
             case BISHOP -> {
                 BishopMoveRule cur_bishop = new BishopMoveRule(myPosition, board);
-                yield cur_bishop.getMoveList();
+                moves.addAll(cur_bishop.getMoveList());
             }
             case KNIGHT -> {
                 KnightMoveRule cur_knight = new KnightMoveRule(myPosition, board);
-                yield cur_knight.getMoveList();
+                moves.addAll(cur_knight.getMoveList());
             }
             case ROOK -> {
                 RookMoveRule cur_rook = new RookMoveRule(myPosition, board);
-                yield cur_rook.getMoveList();
+                moves.addAll(cur_rook.getMoveList());
             }
             case PAWN -> {
                 PawnMoveRule cur_pawn = new PawnMoveRule(myPosition, board);
-                yield cur_pawn.getMoveList();
+                moves.addAll(cur_pawn.getMoveList());
             }
-        };
+        }
+
+        return moves;
     }
 }
