@@ -62,11 +62,11 @@ public class ChessGame {
 
 
 
-        System.out.println(curPiece);
-        System.out.println(startPosition);
-        System.out.println(curBoard);
+//        System.out.println(curPiece);
+//        System.out.println(startPosition);
+//        System.out.println(curBoard);
         HashSet<ChessMove> curPieceMoves = (HashSet<ChessMove>) curPiece.pieceMoves(curBoard,myPosition);
-        System.out.println(curPieceMoves);
+//        System.out.println(curPieceMoves);
 
         HashSet<ChessMove> validPieceMoves = new HashSet<>();
         for (ChessMove curMove : curPieceMoves){
@@ -90,16 +90,21 @@ public class ChessGame {
     public void makeMove(ChessMove move) throws InvalidMoveException {
 
         HashSet<ChessMove> curMoves = validMoves(move.getStartPosition());
-        System.out.println(curMoves);
-        System.out.println(move);
         if (!curMoves.contains(move)){
-            return;
+            throw new InvalidMoveException();
         }
         ChessBoard newBoard = new ChessBoard(curBoard);
+        ChessBoard oldBoard = new ChessBoard(curBoard);
 
         ChessPiece curPiece = curBoard.getPiece(move.getStartPosition());
 
+
         TeamColor curTeamColor = curBoard.getPiece(move.startPosition).getTeamColor();
+
+        if (move.getPromotionPiece() != null){
+            ChessPiece.PieceType newType = move.getPromotionPiece();
+            curPiece = new ChessPiece(curTeamColor,newType);
+        }
 //        System.out.println(curBoard.getPiece(move.getStartPosition()));
         TeamColor otherTeam;
         if (curTeamColor == TeamColor.WHITE){
@@ -110,10 +115,12 @@ public class ChessGame {
 
         newBoard.addPiece(move.endPosition, curPiece);
         newBoard.addPiece(move.startPosition,null);
-        tempBoard = newBoard;
+        curBoard = newBoard;
 
         if (isInCheck(curTeamColor) || teamTurn != curTeamColor){
+//        if (isInCheck(curTeamColor)){
 //            System.out.println(teamTurn != curTeamColor);
+            curBoard = oldBoard;
             throw new InvalidMoveException();
         }
         curBoard = newBoard;
