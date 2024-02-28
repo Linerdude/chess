@@ -1,6 +1,8 @@
 package service;
 
+import chess.ChessBoard;
 import chess.ChessGame;
+import chess.ChessPiece;
 import model.AuthData;
 import model.GameData;
 import dataAccess.MemoryDataAccess;
@@ -46,12 +48,30 @@ public class GameService {
         return null;
     }
 
-    public void joinGame(AuthData auth){
+    public void joinGame(AuthData auth, ChessGame.TeamColor clientColor, Integer gameID){
+        String cur_username = auth.username();
+//        Do I need to add gameID checker? or is it based off the exception thrown
+        GameData cur_game = dataAccess.getGame(gameID);
 
+        String new_blk_username = cur_game.blackUsername();
+        String new_wht_username = cur_game.whiteUsername();
+        if (clientColor == ChessGame.TeamColor.BLACK){
+            if (new_blk_username == null){
+                new_blk_username = cur_username;
+            }
+        } else {
+            if (new_wht_username == null){
+                new_wht_username = cur_username;
+            }
+        }
+        GameData new_game = new GameData(gameID,new_wht_username,new_blk_username,cur_game.gameName(),cur_game.game());
+        dataAccess.updateGame(gameID,new_game);
     }
 
     public void clearApplication(){
-
+        dataAccess.deleteAllAuths();
+        dataAccess.deleteAllUser();
+        dataAccess.deleteAllGames();
     }
 
 }
