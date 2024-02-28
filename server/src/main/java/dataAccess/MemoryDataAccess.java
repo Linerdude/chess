@@ -6,11 +6,13 @@ import java.util.Collection;
 import java.util.HashMap;
 
 public class MemoryDataAccess implements DataAccess {
-    final private HashMap<String, UserData> users = new HashMap<>();
+    final private static HashMap<String, UserData> users = new HashMap<>();
+
+//    public MemoryDataAccess() {
+//    }
 
     public UserData addUser(UserData user) {
         user = new UserData(user.username(), user.password(), user.email());
-
         users.put(user.username(), user);
         return user;
     }
@@ -32,7 +34,7 @@ public class MemoryDataAccess implements DataAccess {
     }
 
 
-    final private HashMap<Integer, GameData> games = new HashMap<>();
+    final private static HashMap<Integer, GameData> games = new HashMap<>();
 
     public GameData addGame(GameData game) {
         game = new GameData(game.gameID(), game.whiteUsername(), game.blackUsername(),game.gameName(), game.game());
@@ -49,6 +51,10 @@ public class MemoryDataAccess implements DataAccess {
         return games.get(gameID);
     }
 
+    public void updateGame(Integer gameID, GameData game){
+        games.put(gameID,game);
+    }
+
     public void deleteGame(Integer gameID) {
         games.remove(gameID);
     }
@@ -60,7 +66,7 @@ public class MemoryDataAccess implements DataAccess {
 
 
 
-    final private HashMap<String, AuthData> auths = new HashMap<>();
+    final private static HashMap<String, AuthData> auths = new HashMap<>();
 
     public AuthData addAuth(AuthData auth) {
         auth = new AuthData(auth.authToken(), auth.username());

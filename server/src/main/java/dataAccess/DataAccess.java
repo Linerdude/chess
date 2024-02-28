@@ -22,6 +22,8 @@ public interface DataAccess {
 
     GameData getGame(Integer gameID) throws DataAccessException;
 
+    void updateGame(Integer gameID, GameData game) throws DataAccessException;
+
     void deleteGame(Integer gameID) throws DataAccessException;
 
     void deleteAllGames() throws DataAccessException;
