@@ -4,6 +4,7 @@ import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessPiece;
 import dataAccess.DataAccessException;
+import handlers.ServiceHandler;
 import model.AuthData;
 import model.GameData;
 import dataAccess.MemoryDataAccess;
@@ -19,31 +20,19 @@ import java.util.Collection;
 import java.util.Objects;
 
 public class GameService {
-    private final MemoryDataAccess dataAccess;
+    private final MemoryDataAccess dataAccess = new MemoryDataAccess();
 
-    public GameService() {
-        this.dataAccess = new MemoryDataAccess();
-    }
 
     public ListGamesResponse listGames(String authToken) throws DataAccessException {
-        ArrayList<AuthData> authList = (ArrayList<AuthData>) dataAccess.listAuth();
-        ArrayList<String> authTokens = null;
-        for (AuthData curAuth : authList){
-            authTokens.add(curAuth.username());
-        }
 
         if (validateAuthToken(authToken)) {
             AuthData auth = dataAccess.getAuth(authToken);
-            String cur_username = auth.username();
-            ArrayList<GameData> cur_games = (ArrayList<GameData>) dataAccess.listGame();
+            ArrayList<GameData> cur_games = new ArrayList<>(dataAccess.listGame());
             ArrayList<ListGameInfo> return_games = new ArrayList<>();
 
             for (GameData game : cur_games) {
-                if (Objects.equals(game.blackUsername(), cur_username) || Objects.equals(game.whiteUsername(), cur_username)) {
-
                     return_games.add(new ListGameInfo(game.gameID(),game.whiteUsername(), game.blackUsername(), game.gameName()));
                 }
-            }
             return new ListGamesResponse(return_games);
         }
         else {
@@ -80,7 +69,6 @@ public class GameService {
         if (validateAuthToken(authToken)) {
             AuthData auth = dataAccess.getAuth(authToken);
             String cur_username = auth.username();
-            ArrayList<GameData> games = (ArrayList<GameData>) dataAccess.listGame();
             Integer gameID = jgRequest.gameID();
 //        Do I need to add gameID checker? or is it based off the exception thrown
             GameData cur_game = dataAccess.getGame(gameID);
@@ -90,22 +78,28 @@ public class GameService {
 
             String new_blk_username = cur_game.blackUsername();
             String new_wht_username = cur_game.whiteUsername();
+            System.out.println(jgRequest);
+            System.out.println(cur_game);
             if (jgRequest.playerColor() == ChessGame.TeamColor.BLACK) {
                 if (new_blk_username == null) {
                     new_blk_username = cur_username;
                 } else {
-                    throw new DataAccessException("Error: bad request");
+                    throw new DataAccessException("Error: already taken");
                 }
             } else if (jgRequest.playerColor() == ChessGame.TeamColor.WHITE) {
                 if (new_wht_username == null) {
                     new_wht_username = cur_username;
                 }
                 else {
-                    throw new DataAccessException("Error: bad request");
+                    throw new DataAccessException("Error: already taken");
                 }
+            } else {
+                return;
             }
             GameData new_game = new GameData(gameID, new_wht_username, new_blk_username, cur_game.gameName(), cur_game.game());
+            System.out.println(new_game);
             dataAccess.updateGame(gameID, new_game);
+            System.out.println(dataAccess.listGame());
         }
         else {
             throw new DataAccessException("Error: unauthorized");
@@ -119,10 +113,10 @@ public class GameService {
     }
 
     public boolean validateAuthToken(String authToken){
-        ArrayList<AuthData> authList = (ArrayList<AuthData>) dataAccess.listAuth();
-        ArrayList<String> authTokens = null;
+        ArrayList<AuthData> authList = new ArrayList<>(dataAccess.listAuth());
+        ArrayList<String> authTokens = new ArrayList<>();
         for (AuthData curAuth : authList){
-            authTokens.add(curAuth.username());
+            authTokens.add(curAuth.authToken());
         }
         return authTokens.contains(authToken);
     }
