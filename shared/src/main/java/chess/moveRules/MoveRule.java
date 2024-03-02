@@ -60,6 +60,39 @@ public class MoveRule {
         }
     }
 
+    static void MoveDiagonal(ChessPosition startPosition, ChessBoard board, ArrayList<ChessMove> moveList) {
+        int initRow = startPosition.getRow() - 1;
+        int initCol = startPosition.getColumn() - 1;
+
+        MoveItDiag(startPosition, board, moveList, initRow,initCol,1,1);
+        MoveItDiag(startPosition, board, moveList, initRow,initCol,-1,1);
+        MoveItDiag(startPosition, board, moveList, initRow,initCol,1,-1);
+        MoveItDiag(startPosition, board, moveList, initRow,initCol,-1,-1);
+    }
+
+    private static void MoveItDiag(ChessPosition startPosition, ChessBoard board, ArrayList<ChessMove> moveList, int curRow, int curCol, int i, int j) {
+        int endNumI;
+        if (i>0){
+            endNumI = 7;
+        } else {
+            endNumI = 0;
+        }
+        int endNumJ;
+        if (j>0){
+            endNumJ = 7;
+        } else {
+            endNumJ = 0;
+        }
+        while(curCol != endNumI && curRow != endNumJ){
+            curCol += i;
+            curRow += j;
+            if (moveItFunction(startPosition, board, moveList, curRow, curCol)) break;
+        }
+
+    }
+
+
+
     private static boolean moveItFunction(ChessPosition startPosition, ChessBoard board, ArrayList<ChessMove> moveList, int curRow, int curCol) {
         ChessPosition newPos = new ChessPosition(curRow +1, curCol +1);
         if (board.getPiece(newPos) == null){
