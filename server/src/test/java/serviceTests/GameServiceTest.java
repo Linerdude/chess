@@ -26,7 +26,7 @@ class GameServiceTest {
         String testAuth = this.authService.register(new RegisterRequest(
                 "testUsername", "testPassword", "testEmail")).authToken();
         String tammyAuth = this.authService.register(new RegisterRequest(
-                "tammywammybammyyammy", "ymmayymmabymmawymmat", "3@gmail.com")).authToken();
+                "tammyUsername", "tammyPassword", "3@gmail.com")).authToken();
         this.ryanAuth = this.authService.register(new RegisterRequest(
                 "5john2", "thisisapen", "ryan@bop.com")).authToken();
         String rebeccaAuth = this.authService.register(new RegisterRequest(
@@ -93,5 +93,14 @@ class GameServiceTest {
         DataAccessException exception = assertThrows(DataAccessException.class, () ->
                 this.gameService.joinGame(new JoinGameRequest(ChessGame.TeamColor.BLACK, newGameID), ryanAuth));
         assertEquals("Error: already taken", exception.getMessage());
+    }
+
+    @Test
+    @Order(7)
+    @DisplayName("clear (+)")
+    void clear_positive() {
+        this.doService.clearApplication();
+        DataAccessException exception = assertThrows(DataAccessException.class, () -> this.authService.logout(this.ryanAuth));
+        assertEquals("Error: unauthorized", exception.getMessage());
     }
 }

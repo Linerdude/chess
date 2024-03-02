@@ -17,16 +17,8 @@ public class MemoryDataAccess implements DataAccess {
         return user;
     }
 
-    public Collection<UserData> listUser() {
-        return users.values();
-    }
-
     public UserData getUser(String username) {
         return users.get(username);
-    }
-
-    public void deleteUser(String username) {
-        users.remove(username);
     }
 
     public void deleteAllUser() {
@@ -53,10 +45,6 @@ public class MemoryDataAccess implements DataAccess {
 
     public void updateGame(Integer gameID, GameData game){
         games.put(gameID,game);
-    }
-
-    public void deleteGame(Integer gameID) {
-        games.remove(gameID);
     }
 
     public void deleteAllGames() {

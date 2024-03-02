@@ -74,7 +74,6 @@ public class ChessGame {
             TeamColor curTeamColor = curBoard.getPiece(curMove.startPosition).getTeamColor();
             curBoard.addPiece(curMove.endPosition, curPiece);
             curBoard.addPiece(curMove.startPosition,null);
-//            curBoard = new ChessBoard(newBoard);
 
             System.out.println(curBoard);
 
@@ -82,13 +81,11 @@ public class ChessGame {
                 System.out.println(curBoard);
                 System.out.println("move will result in check");
 
-//                curBoard = validOldBoard;
                 curBoard.addPiece(curMove.endPosition,endPiece);
                 curBoard.addPiece(curMove.startPosition,curPiece);
                 continue;
             }
 
-//            curBoard = validOldBoard;
             curBoard.addPiece(curMove.endPosition,endPiece);
             curBoard.addPiece(curMove.startPosition,curPiece);
             if (curBoard.getPiece(endPos) == null){
@@ -99,7 +96,6 @@ public class ChessGame {
             curBoard.addPiece(curMove.endPosition,endPiece);
             curBoard.addPiece(curMove.startPosition,curPiece);
         }
-//        curBoard = validOldBoard;
         return validPieceMoves;
     }
 
@@ -127,7 +123,6 @@ public class ChessGame {
             ChessPiece.PieceType newType = move.getPromotionPiece();
             curPiece = new ChessPiece(curTeamColor,newType);
         }
-//        System.out.println(curBoard.getPiece(move.getStartPosition()));
         TeamColor otherTeam;
         if (curTeamColor == TeamColor.WHITE){
             otherTeam = TeamColor.BLACK;
@@ -140,12 +135,9 @@ public class ChessGame {
         curBoard = new ChessBoard(newBoard);
 
         if (isInCheck(curTeamColor) || teamTurn != curTeamColor){
-//        if (isInCheck(curTeamColor)){
-//            System.out.println(teamTurn != curTeamColor);
             curBoard = new ChessBoard(oldBoard);
             throw new InvalidMoveException();
         }
-//        curBoard = newBoard;
 
         setTeamTurn(otherTeam);
 
@@ -171,7 +163,6 @@ public class ChessGame {
 
                 if (curPiece != null) {
                     if (curPiece.getPieceType() == ChessPiece.PieceType.KING && curPiece.getTeamColor() == teamColor) {
-//                        System.out.println("Found King");
                         kingPos = curPos;
                         break;
                     }
@@ -221,19 +212,7 @@ public class ChessGame {
             return false;
         } else {
 
-
-//            ChessPosition kingPos = null;
-//            for (int i = 0; i < 8; i++) {
-//                for (int j = 0; j < 8; j++) {
-//                    ChessPosition curPos = new ChessPosition(i + 1, j + 1);
-//                    ChessPiece curPiece = curBoard.getPiece(curPos);
-//
-//                    ChessPiece kingCompare = new ChessPiece(teamColor, ChessPiece.PieceType.KING);
-//                    if (Objects.equals(curPiece, kingCompare)) {
-//                        kingPos = curPos;
-//                    }
-//                }
-//            }
+            
             ChessBoard oldBoard = new ChessBoard(curBoard);
             for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < 8; j++) {

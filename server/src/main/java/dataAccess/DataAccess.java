@@ -24,18 +24,14 @@ public interface DataAccess {
 
     void updateGame(Integer gameID, GameData game) throws DataAccessException;
 
-    void deleteGame(Integer gameID) throws DataAccessException;
 
     void deleteAllGames() throws DataAccessException;
 
 
     UserData addUser(UserData user) throws DataAccessException;
 
-    Collection<UserData> listUser() throws DataAccessException;
 
     UserData getUser(String username) throws DataAccessException;
-
-    void deleteUser(String username) throws DataAccessException;
 
     void deleteAllUser() throws DataAccessException;
 }
