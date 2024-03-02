@@ -19,17 +19,17 @@ public class KnightMoveRule {
     }
 
     public void setMoveList(){
-        int cur_row = startPosition.getRow()-1;
-        int cur_col = startPosition.getColumn()-1;
+        int curRow = startPosition.getRow()-1;
+        int curCol = startPosition.getColumn()-1;
 
-        addKnighMove(cur_row+2,cur_col+1);
-        addKnighMove(cur_row-2,cur_col-1);
-        addKnighMove(cur_row-2,cur_col+1);
-        addKnighMove(cur_row+2,cur_col-1);
-        addKnighMove(cur_row+1,cur_col+2);
-        addKnighMove(cur_row-1,cur_col-2);
-        addKnighMove(cur_row+1,cur_col-2);
-        addKnighMove(cur_row-1,cur_col+2);
+        addKnighMove(curRow+2,curCol+1);
+        addKnighMove(curRow-2,curCol-1);
+        addKnighMove(curRow-2,curCol+1);
+        addKnighMove(curRow+2,curCol-1);
+        addKnighMove(curRow+1,curCol+2);
+        addKnighMove(curRow-1,curCol-2);
+        addKnighMove(curRow+1,curCol-2);
+        addKnighMove(curRow-1,curCol+2);
 
         ArrayList<ChessMove> newMoveList = new ArrayList<>(moveList);
         for(ChessMove i : moveList){
@@ -48,9 +48,9 @@ public class KnightMoveRule {
     }
 
     public void addKnighMove(int row, int col){
-        ChessPosition new_pos = new ChessPosition(row+1, col+1);
-        ChessMove new_move = new ChessMove(startPosition,new_pos,null);
-        moveList.add(new_move);
+        ChessPosition newPos = new ChessPosition(row+1, col+1);
+        ChessMove newMove = new ChessMove(startPosition,newPos,null);
+        moveList.add(newMove);
     }
 
     public ArrayList<ChessMove> getMoveList(){ return moveList; }
