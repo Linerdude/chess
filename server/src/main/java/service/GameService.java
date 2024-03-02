@@ -27,13 +27,13 @@ public class GameService {
 
         if (validateAuthToken(authToken)) {
             AuthData auth = dataAccess.getAuth(authToken);
-            ArrayList<GameData> cur_games = new ArrayList<>(dataAccess.listGame());
-            ArrayList<ListGameInfo> return_games = new ArrayList<>();
+            ArrayList<GameData> curGames = new ArrayList<>(dataAccess.listGame());
+            ArrayList<ListGameInfo> returnGames = new ArrayList<>();
 
-            for (GameData game : cur_games) {
-                    return_games.add(new ListGameInfo(game.gameID(),game.whiteUsername(), game.blackUsername(), game.gameName()));
+            for (GameData game : curGames) {
+                    returnGames.add(new ListGameInfo(game.gameID(),game.whiteUsername(), game.blackUsername(), game.gameName()));
                 }
-            return new ListGamesResponse(return_games);
+            return new ListGamesResponse(returnGames);
         }
         else {
             throw new DataAccessException("Error: unauthorized");
@@ -41,19 +41,19 @@ public class GameService {
     }
 
     public CreateGameResponse createGame(CreateGameRequest cgRequest, String authToken) throws DataAccessException{
-        Collection<GameData> cur_games =  dataAccess.listGame();
-        ArrayList<String> cur_names = new ArrayList<>();
+        Collection<GameData> curGames =  dataAccess.listGame();
+        ArrayList<String> curNames = new ArrayList<>();
         if (validateAuthToken(authToken)) {
-            int cur_ID = 0;
-            for (GameData game : cur_games) {
-                cur_ID = game.gameID();
-                cur_names.add(game.gameName());
+            int curID = 0;
+            for (GameData game : curGames) {
+                curID = game.gameID();
+                curNames.add(game.gameName());
             }
-            if (!cur_names.contains(cgRequest.gameName())) {
-                int new_id = cur_ID + 1;
-                GameData new_game = new GameData(new_id, null, null, cgRequest.gameName(), new ChessGame());
-                dataAccess.addGame(new_game);
-                return new CreateGameResponse(new_id);
+            if (!curNames.contains(cgRequest.gameName())) {
+                int newID = curID + 1;
+                GameData newGame = new GameData(newID, null, null, cgRequest.gameName(), new ChessGame());
+                dataAccess.addGame(newGame);
+                return new CreateGameResponse(newID);
             }
             else {
                 return null;
@@ -68,27 +68,27 @@ public class GameService {
     public void joinGame(JoinGameRequest jgRequest, String authToken) throws DataAccessException {
         if (validateAuthToken(authToken)) {
             AuthData auth = dataAccess.getAuth(authToken);
-            String cur_username = auth.username();
+            String curUsername = auth.username();
             Integer gameID = jgRequest.gameID();
 //        Do I need to add gameID checker? or is it based off the exception thrown
-            GameData cur_game = dataAccess.getGame(gameID);
-            if (cur_game == null){
+            GameData curGame = dataAccess.getGame(gameID);
+            if (curGame == null){
                 throw new DataAccessException("Error: bad request");
             }
 
-            String new_blk_username = cur_game.blackUsername();
-            String new_wht_username = cur_game.whiteUsername();
+            String newBlkUsername = curGame.blackUsername();
+            String newWhtUsername = curGame.whiteUsername();
             System.out.println(jgRequest);
-            System.out.println(cur_game);
+            System.out.println(curGame);
             if (jgRequest.playerColor() == ChessGame.TeamColor.BLACK) {
-                if (new_blk_username == null) {
-                    new_blk_username = cur_username;
+                if (newBlkUsername == null) {
+                    newBlkUsername = curUsername;
                 } else {
                     throw new DataAccessException("Error: already taken");
                 }
             } else if (jgRequest.playerColor() == ChessGame.TeamColor.WHITE) {
-                if (new_wht_username == null) {
-                    new_wht_username = cur_username;
+                if (newWhtUsername == null) {
+                    newWhtUsername = curUsername;
                 }
                 else {
                     throw new DataAccessException("Error: already taken");
@@ -96,9 +96,9 @@ public class GameService {
             } else {
                 return;
             }
-            GameData new_game = new GameData(gameID, new_wht_username, new_blk_username, cur_game.gameName(), cur_game.game());
-            System.out.println(new_game);
-            dataAccess.updateGame(gameID, new_game);
+            GameData newGame = new GameData(gameID, newWhtUsername, newBlkUsername, curGame.gameName(), curGame.game());
+            System.out.println(newGame);
+            dataAccess.updateGame(gameID, newGame);
             System.out.println(dataAccess.listGame());
         }
         else {

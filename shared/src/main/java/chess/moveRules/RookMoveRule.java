@@ -19,7 +19,7 @@ public class RookMoveRule {
     }
 
     public void setMoveList(){
-        MoveRule.MoveStraight(startPosition, board, moveList);
+        MoveRule.moveStraight(startPosition, board, moveList);
     }
 
     public ArrayList<ChessMove> getMoveList(){ return moveList; }

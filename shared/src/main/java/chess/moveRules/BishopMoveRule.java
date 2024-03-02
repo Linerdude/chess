@@ -20,7 +20,7 @@ public class BishopMoveRule {
 
     public void setMoveList(){
 
-        MoveRule.MoveDiagonal(startPosition,board,moveList);
+        MoveRule.moveDiagonal(startPosition,board,moveList);
 
     }
 

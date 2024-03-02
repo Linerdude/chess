@@ -86,28 +86,28 @@ public class ChessPiece {
 
         switch (type) {
             case KING -> {
-                KingMoveRule cur_king = new KingMoveRule(myPosition, board);
-                moves.addAll(cur_king.getMoveList());
+                KingMoveRule curKing = new KingMoveRule(myPosition, board);
+                moves.addAll(curKing.getMoveList());
             }
             case QUEEN -> {
-                QueenMoveRule cur_queen = new QueenMoveRule(myPosition, board);
-                moves.addAll(cur_queen.getMoveList());
+                QueenMoveRule curQueen = new QueenMoveRule(myPosition, board);
+                moves.addAll(curQueen.getMoveList());
             }
             case BISHOP -> {
-                BishopMoveRule cur_bishop = new BishopMoveRule(myPosition, board);
-                moves.addAll(cur_bishop.getMoveList());
+                BishopMoveRule curBishop = new BishopMoveRule(myPosition, board);
+                moves.addAll(curBishop.getMoveList());
             }
             case KNIGHT -> {
-                KnightMoveRule cur_knight = new KnightMoveRule(myPosition, board);
-                moves.addAll(cur_knight.getMoveList());
+                KnightMoveRule curKnight = new KnightMoveRule(myPosition, board);
+                moves.addAll(curKnight.getMoveList());
             }
             case ROOK -> {
-                RookMoveRule cur_rook = new RookMoveRule(myPosition, board);
-                moves.addAll(cur_rook.getMoveList());
+                RookMoveRule curRook = new RookMoveRule(myPosition, board);
+                moves.addAll(curRook.getMoveList());
             }
             case PAWN -> {
-                PawnMoveRule cur_pawn = new PawnMoveRule(myPosition, board);
-                moves.addAll(cur_pawn.getMoveList());
+                PawnMoveRule curPawn = new PawnMoveRule(myPosition, board);
+                moves.addAll(curPawn.getMoveList());
             }
         }
 

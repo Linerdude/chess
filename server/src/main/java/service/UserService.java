@@ -28,10 +28,10 @@ public class UserService {
         if (user != null){
             throw new DataAccessException("Error: already taken");
         } else {
-            UserData new_user = new UserData(rRequest.username(),rRequest.password(),rRequest.email());
-            dataAccess.addUser(new_user);
+            UserData newUser = new UserData(rRequest.username(),rRequest.password(),rRequest.email());
+            dataAccess.addUser(newUser);
             String newToken = createAuth();
-            AuthData newAuth = new AuthData(newToken,new_user.username());
+            AuthData newAuth = new AuthData(newToken,newUser.username());
             dataAccess.addAuth(newAuth);
             return new RegisterResponse(rRequest.username(),newToken);
         }

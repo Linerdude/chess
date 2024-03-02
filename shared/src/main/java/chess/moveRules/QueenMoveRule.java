@@ -19,8 +19,8 @@ public class QueenMoveRule {
     }
 
     public void setMoveList(){
-        MoveRule.MoveDiagonal(startPosition,board,moveList);
-        MoveRule.MoveStraight(startPosition,board,moveList);
+        MoveRule.moveDiagonal(startPosition,board,moveList);
+        MoveRule.moveStraight(startPosition,board,moveList);
     }
 
     public ArrayList<ChessMove> getMoveList(){ return moveList; }

@@ -19,36 +19,27 @@ public class KingMoveRule {
     }
 
     public void setMoveList(){
-        int cur_row = startPosition.getRow()-1;
-        int cur_col = startPosition.getColumn()-1;
+        int curRow = startPosition.getRow()-1;
+        int curCol = startPosition.getColumn()-1;
 
-        for(int i=cur_row-1;i<=cur_row+1;i++){
-            for(int j=cur_col-1;j<=cur_col+1;j++){
-                ChessPosition new_pos = new ChessPosition(i+1,j+1);
-                if (new_pos.getColumn() < 8 && new_pos.getColumn() >= 1){
-                    if (new_pos.getRow() < 8 && new_pos.getRow() >= 1){
-                        if (board.getPiece(new_pos) == null){
-                            ChessMove new_move = new ChessMove(startPosition,new_pos,null);
-                            moveList.add(new_move);
+        for(int i=curRow-1;i<=curRow+1;i++){
+            for(int j=curCol-1;j<=curCol+1;j++){
+                ChessPosition newPos = new ChessPosition(i+1,j+1);
+                if (newPos.getColumn() < 8 && newPos.getColumn() >= 1){
+                    if (newPos.getRow() < 8 && newPos.getRow() >= 1){
+                        if (board.getPiece(newPos) == null){
+                            ChessMove newMove = new ChessMove(startPosition,newPos,null);
+                            moveList.add(newMove);
                         }
-                        else if(board.getPiece(new_pos).getTeamColor() != board.getPiece(startPosition).getTeamColor()){
-                            ChessMove new_move = new ChessMove(startPosition,new_pos,null);
-                            moveList.add(new_move);
+                        else if(board.getPiece(newPos).getTeamColor() != board.getPiece(startPosition).getTeamColor()){
+                            ChessMove newMove = new ChessMove(startPosition,newPos,null);
+                            moveList.add(newMove);
                         }
                     }
                 }
 
             }
         }
-//        ArrayList<ChessMove> tempList = new ArrayList<ChessMove>();
-//        for (ChessMove move : moveList){
-//            if (move.getEndPosition().getColumn() > 7 || move.getEndPosition().getColumn() < 1){
-//                if (move.getEndPosition().getRow() > 7 || move.getEndPosition().getRow() < 1){
-//                    tempList.add(move);
-//                }
-//            }
-//        }
-//        moveList.removeAll(tempList);
 
     }
 

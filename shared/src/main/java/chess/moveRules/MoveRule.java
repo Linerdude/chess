@@ -20,20 +20,20 @@ public class MoveRule {
     }
 
     public void setMoveList(){
-        MoveStraight(startPosition, board, moveList);
+        moveStraight(startPosition, board, moveList);
     }
 
-    static void MoveStraight(ChessPosition startPosition, ChessBoard board, ArrayList<ChessMove> moveList) {
+    static void moveStraight(ChessPosition startPosition, ChessBoard board, ArrayList<ChessMove> moveList) {
         int initRow = startPosition.getRow()-1;
         int initCol = startPosition.getColumn()-1;
 
-        MoveStraightVer(startPosition, board, moveList, initRow, initCol, 1);
-        MoveStraightHor(startPosition, board, moveList, initRow, initCol, 1);
-        MoveStraightHor(startPosition, board, moveList, initRow, initCol, -1);
-        MoveStraightVer(startPosition, board, moveList, initRow, initCol, -1);
+        moveStraightVer(startPosition, board, moveList, initRow, initCol, 1);
+        moveStraightHor(startPosition, board, moveList, initRow, initCol, 1);
+        moveStraightHor(startPosition, board, moveList, initRow, initCol, -1);
+        moveStraightVer(startPosition, board, moveList, initRow, initCol, -1);
     }
 
-    private static void MoveStraightHor(ChessPosition startPosition, ChessBoard board, ArrayList<ChessMove> moveList, int curRow, int curCol, int i) {
+    private static void moveStraightHor(ChessPosition startPosition, ChessBoard board, ArrayList<ChessMove> moveList, int curRow, int curCol, int i) {
         int endNum;
         if (i>0){
             endNum = 7;
@@ -47,7 +47,7 @@ public class MoveRule {
 
     }
 
-    private static void MoveStraightVer(ChessPosition startPosition, ChessBoard board, ArrayList<ChessMove> moveList, int curRow, int curCol, int i) {
+    private static void moveStraightVer(ChessPosition startPosition, ChessBoard board, ArrayList<ChessMove> moveList, int curRow, int curCol, int i) {
         int end;
         if (i<0){
             end = 0;
@@ -60,17 +60,17 @@ public class MoveRule {
         }
     }
 
-    static void MoveDiagonal(ChessPosition startPosition, ChessBoard board, ArrayList<ChessMove> moveList) {
+    static void moveDiagonal(ChessPosition startPosition, ChessBoard board, ArrayList<ChessMove> moveList) {
         int initRow = startPosition.getRow() - 1;
         int initCol = startPosition.getColumn() - 1;
 
-        MoveItDiag(startPosition, board, moveList, initRow,initCol,1,1);
-        MoveItDiag(startPosition, board, moveList, initRow,initCol,-1,1);
-        MoveItDiag(startPosition, board, moveList, initRow,initCol,1,-1);
-        MoveItDiag(startPosition, board, moveList, initRow,initCol,-1,-1);
+        moveItDiag(startPosition, board, moveList, initRow,initCol,1,1);
+        moveItDiag(startPosition, board, moveList, initRow,initCol,-1,1);
+        moveItDiag(startPosition, board, moveList, initRow,initCol,1,-1);
+        moveItDiag(startPosition, board, moveList, initRow,initCol,-1,-1);
     }
 
-    private static void MoveItDiag(ChessPosition startPosition, ChessBoard board, ArrayList<ChessMove> moveList, int curRow, int curCol, int i, int j) {
+    private static void moveItDiag(ChessPosition startPosition, ChessBoard board, ArrayList<ChessMove> moveList, int curRow, int curCol, int i, int j) {
         int endNumI;
         if (i>0){
             endNumI = 7;
