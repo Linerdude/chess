@@ -8,9 +8,6 @@ import java.util.HashMap;
 public class MemoryDataAccess implements DataAccess {
     final private static HashMap<String, UserData> users = new HashMap<>();
 
-//    public MemoryDataAccess() {
-//    }
-
     public UserData addUser(UserData user) {
         user = new UserData(user.username(), user.password(), user.email());
         users.put(user.username(), user);
