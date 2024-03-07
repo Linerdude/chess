@@ -27,7 +27,8 @@ public class SQLDataAccess implements DataAccess {
     public void CreateTables() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
 
-            conn.setCatalog("chess");
+
+            conn.setCatalog(DatabaseManager.getDatabaseName());
 
             var createUserTable = """
                 CREATE TABLE  IF NOT EXISTS userTable (
