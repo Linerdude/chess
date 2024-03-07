@@ -50,7 +50,7 @@ class GameServiceTest {
     @DisplayName("listGames (+)")
     void listGames_positive() throws DataAccessException {
         int length = this.gameService.listGames(this.ryanAuth).games().size();
-        assertEquals(3, length);
+        assertEquals(4, length);
     }
 
     @Test
