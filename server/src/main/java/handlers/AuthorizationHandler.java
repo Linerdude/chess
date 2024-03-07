@@ -13,7 +13,7 @@ import dataAccess.DataAccessException;
 public class AuthorizationHandler extends ServiceHandler {
     private final UserService service = new UserService();
 
-    public AuthorizationHandler(Request request, Response response) { super(request, response); }
+    public AuthorizationHandler(Request request, Response response) throws DataAccessException { super(request, response); }
 
     public Object register() {
         String body;

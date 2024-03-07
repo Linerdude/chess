@@ -4,6 +4,7 @@ import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessPiece;
 import dataAccess.DataAccessException;
+import dataAccess.SQLDataAccess;
 import handlers.ServiceHandler;
 import model.AuthData;
 import model.GameData;
@@ -20,7 +21,11 @@ import java.util.Collection;
 import java.util.Objects;
 
 public class GameService {
-    private final MemoryDataAccess dataAccess = new MemoryDataAccess();
+//    private final MemoryDataAccess dataAccess = new MemoryDataAccess();
+    private final SQLDataAccess dataAccess = new SQLDataAccess();
+
+    public GameService() throws DataAccessException {
+    }
 
 
     public ListGamesResponse listGames(String authToken) throws DataAccessException {
@@ -106,13 +111,13 @@ public class GameService {
         }
     }
 
-    public void clearApplication(){
+    public void clearApplication() throws DataAccessException {
         dataAccess.deleteAllAuths();
         dataAccess.deleteAllUser();
         dataAccess.deleteAllGames();
     }
 
-    public boolean validateAuthToken(String authToken){
+    public boolean validateAuthToken(String authToken) throws DataAccessException {
         ArrayList<AuthData> authList = new ArrayList<>(dataAccess.listAuth());
         ArrayList<String> authTokens = new ArrayList<>();
         for (AuthData curAuth : authList){

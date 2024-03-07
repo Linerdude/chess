@@ -2,6 +2,7 @@ package service;
 
 import dataAccess.DataAccessException;
 import dataAccess.MemoryDataAccess;
+import dataAccess.SQLDataAccess;
 import handlers.ServiceHandler;
 import model.AuthData;
 import model.UserData;
@@ -17,7 +18,11 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class UserService {
-    private final MemoryDataAccess dataAccess = new MemoryDataAccess();
+//    private final MemoryDataAccess dataAccess = new MemoryDataAccess();
+    private final SQLDataAccess dataAccess = new SQLDataAccess();
+
+    public UserService() throws DataAccessException {
+    }
 
 
     public RegisterResponse register(RegisterRequest rRequest) throws DataAccessException {

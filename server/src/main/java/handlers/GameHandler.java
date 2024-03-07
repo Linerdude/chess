@@ -13,7 +13,7 @@ import dataAccess.DataAccessException;
 public class GameHandler extends ServiceHandler {
     private final GameService service = new GameService();
 
-    public GameHandler(Request request, Response response) { super(request, response); }
+    public GameHandler(Request request, Response response) throws DataAccessException { super(request, response); }
 
     public Object listGames() {
         String body;
@@ -61,6 +61,7 @@ public class GameHandler extends ServiceHandler {
             body = new Gson().toJson(new ServerResponse(""));
             this.response.status(200);
         } catch (DataAccessException ex) {
+            System.out.println(ex.getMessage());
             body = new Gson().toJson(new ServerResponse(ex.getMessage()));
             switch (ex.getMessage()) {
                 case "Error: bad request" -> this.response.status(400);

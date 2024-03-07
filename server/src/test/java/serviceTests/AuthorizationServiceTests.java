@@ -20,6 +20,9 @@ class AuthorizationServiceTests {
 
     private String ryanAuth;
 
+    AuthorizationServiceTests() throws DataAccessException {
+    }
+
     @BeforeEach
     void setUp() throws DataAccessException {
         String testAuth = this.authService.register(new RegisterRequest(
@@ -37,7 +40,7 @@ class AuthorizationServiceTests {
     }
 
     @AfterEach
-    void tearDown() {
+    void tearDown() throws DataAccessException {
         this.doService.clearApplication();
     }
 

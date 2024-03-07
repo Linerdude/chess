@@ -21,6 +21,9 @@ class GameServiceTest {
 
     private String ryanAuth;
 
+    GameServiceTest() throws DataAccessException {
+    }
+
     @BeforeEach
     void setUp() throws DataAccessException {
         String testAuth = this.authService.register(new RegisterRequest(
@@ -38,7 +41,7 @@ class GameServiceTest {
     }
 
     @AfterEach
-    void tearDown() {
+    void tearDown() throws DataAccessException {
         this.doService.clearApplication();
     }
 
@@ -98,7 +101,7 @@ class GameServiceTest {
     @Test
     @Order(7)
     @DisplayName("clear (+)")
-    void clear_positive() {
+    void clear_positive() throws DataAccessException {
         this.doService.clearApplication();
         DataAccessException exception = assertThrows(DataAccessException.class, () -> this.authService.logout(this.ryanAuth));
         assertEquals("Error: unauthorized", exception.getMessage());

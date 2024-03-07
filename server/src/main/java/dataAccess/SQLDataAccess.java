@@ -220,7 +220,9 @@ public class SQLDataAccess implements DataAccess {
                 preparedStatement.setString(1, game.whiteUsername());
                 preparedStatement.setString(2, game.blackUsername());
                 preparedStatement.setString(3, game.gameName());
-                preparedStatement.setString(4, game.game().toString());
+
+                var json = new Gson().toJson(game.game());
+                preparedStatement.setString(4, json);
 
                 preparedStatement.executeUpdate();
             }
