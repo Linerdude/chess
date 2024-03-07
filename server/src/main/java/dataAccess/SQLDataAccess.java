@@ -224,6 +224,8 @@ public class SQLDataAccess implements DataAccess {
                 var json = new Gson().toJson(game.game());
                 preparedStatement.setString(4, json);
 
+                preparedStatement.setInt(5,gameID);
+
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException | DataAccessException e) {
