@@ -7,6 +7,7 @@ import handlers.ServiceHandler;
 import model.AuthData;
 import model.UserData;
 import org.eclipse.jetty.server.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import requestRecords.RegisterRequest;
 import requestRecords.LoginRequest;
 import responseRecords.RegisterResponse;
@@ -45,7 +46,8 @@ public class UserService {
         UserData user = dataAccess.getUser(lRequest.username());
 //        System.out.println(user);
         if (user != null) {
-            if (Objects.equals(user.password(), lRequest.password())) {
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            if (encoder.matches(lRequest.password(),user.password())) {
                 String newToken = createAuth();
                 AuthData newAuth = new AuthData(newToken, user.username());
                 dataAccess.addAuth(newAuth);

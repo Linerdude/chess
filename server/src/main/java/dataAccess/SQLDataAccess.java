@@ -253,7 +253,7 @@ public class SQLDataAccess implements DataAccess {
 
 //                TODO: fix hashed password, esp in getUser below
                 preparedStatement.setString(1, user.username());
-                preparedStatement.setString(2, user.password());
+                preparedStatement.setString(2, hashedPassword);
                 preparedStatement.setString(3, user.email());
 
                 preparedStatement.executeUpdate();
