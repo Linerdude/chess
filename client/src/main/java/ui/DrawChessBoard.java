@@ -13,7 +13,6 @@ public class DrawChessBoard {
     static String[] letterHeadersForward = {"   ", " a ", " b ", " c ", " d ", " e ", " f ", " g ", " h ", "   "};
     static String[] letterHeadersReverse = {"   ", " h ", " g ", " f ", " e ", " d ", " c ", " b ", " a ", "   "};
 
-    static String[] numHeaders = {" 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 "};
     static String king = " K ";
     static String queen = " Q ";
     static String knight = " N ";
