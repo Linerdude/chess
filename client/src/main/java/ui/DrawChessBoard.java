@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets;
 
 import java.util.Objects;
 
+import static java.lang.Math.abs;
 import static ui.EscapeSequences.*;
 
 public class DrawChessBoard {
@@ -28,19 +29,22 @@ public class DrawChessBoard {
     private static final String outerBoarderTextColor = SET_TEXT_COLOR_BLACK;
     private static final String blank = "\u001B[0m";
 
+    private static int directionIndicator = 0;
+
     public static void ChessBoardToTerminal(){
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
         out.print(ERASE_SCREEN);
 
-        ChessBoardForward(out);
-        blankLine(out);
-        blankLine(out);
         ChessBoardReverse(out);
+        blankLine(out);
+        blankLine(out);
+        ChessBoardForward(out);
 
     }
 
     public static void ChessBoardForward(PrintStream out){
+        directionIndicator = 0;
         letterHeaders = letterHeadersForward;
         PrintString(out,null,null,"header", null);
         String[] startingLineArray = {rook, knight, bishop, queen, king, bishop, knight, rook};
@@ -60,9 +64,10 @@ public class DrawChessBoard {
     }
 
     public static void ChessBoardReverse(PrintStream out){
+        directionIndicator = 1;
         letterHeaders = letterHeadersReverse;
         PrintString(out,null,null,"header", null);
-        String[] startingLineArray = {rook, knight, bishop, queen, king, bishop, knight, rook};
+        String[] startingLineArray = {rook, knight, bishop, king, queen, bishop, knight, rook};
         int[] colorArrayWhite = {0,0,0,0,0,0,0,0};
         int[] colorArrayBlack = {1,1,1,1,1,1,1,1};
         PrintString(out,startingLineArray, colorArrayBlack,"layer", 8);
@@ -96,7 +101,7 @@ public class DrawChessBoard {
             int evenOrOdd = sideNum % 2;
             for (String curPiece : toPrint) {
                 counter++;
-                if (counter % 2 == evenOrOdd) {
+                if (counter % 2 == abs(evenOrOdd-directionIndicator)) {
                     out.print(boardColor1);
                     if (colorArray[counter - 1] == 0) {
                         out.print(teamText2);
@@ -115,7 +120,7 @@ public class DrawChessBoard {
                 }
             }
             outerBoarderSet(out);
-            out.print(" " + sideNum.toString() + " ");
+            out.print(" " + sideNum + " ");
             blankLine(out);
         }
 
