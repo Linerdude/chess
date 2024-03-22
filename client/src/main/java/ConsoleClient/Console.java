@@ -204,7 +204,7 @@ public class Console {
     }
 
     private void list() throws ResponseException {
-        ListGamesResponse response = server.listGames();
+        ListGamesResponse response = server.listGames(this.userAuthToken);
         System.out.print("\nCURRENT GAMES:\n");
         System.out.print("    Game Name | Game ID | White Player Username | Black Player Username\n");
         for(ListGameInfo gameInfo: response.games()) {
@@ -232,7 +232,7 @@ public class Console {
         } else if (Objects.equals(color, "BLACK")){
             colorObj = ChessGame.TeamColor.BLACK;
         } else {
-            System.out.print("Invalid color selection.");
+            System.out.print("No color selected, observing\n");
         }
         server.joinGame(new JoinGameRequest(colorObj, gameID), this.userAuthToken);
         // Default board printing for phase 5

@@ -27,51 +27,48 @@ public class ServerFacade {
 
     public RegisterResponse register(RegisterRequest request) throws ResponseException {
         var path = "/user";
-        return this.makeRequest("POST", path, request, RegisterResponse.class);
+        return this.makeRequest("POST", path, request, RegisterResponse.class,null);
     }
 
     public LoginResponse login(LoginRequest request) throws ResponseException {
         var path = "/session";
-        return this.makeRequest("POST", path, request, LoginResponse.class);
+        return this.makeRequest("POST", path, request, LoginResponse.class, null);
     }
 
     public void logout(String authToken) throws ResponseException {
         var path = "/session";
-        this.makeRequest("DELETE", path, authToken, null);
+        this.makeRequest("DELETE", path, null, null, authToken);
     }
 
-    public ListGamesResponse listGames() throws ResponseException {
+    public ListGamesResponse listGames(String authToken) throws ResponseException {
         var path = "/game";
-        return this.makeRequest("GET", path, null, ListGamesResponse.class);
+        return this.makeRequest("GET", path, null, ListGamesResponse.class,authToken);
     }
 
     public CreateGameResponse createGame(CreateGameRequest request, String authToken) throws ResponseException {
         var path = "/game";
-        record createGameWAuth(CreateGameRequest request, String authToken){}
-        createGameWAuth newRequest = new createGameWAuth(request,authToken);
-        return this.makeRequest("POST", path, newRequest, CreateGameResponse.class);
+        return this.makeRequest("POST", path, request, CreateGameResponse.class, authToken);
     }
 
     public void joinGame(JoinGameRequest request, String authToken) throws ResponseException {
         var path = "/game";
-        record joinGameWAuth(JoinGameRequest request, String authToken){}
-        joinGameWAuth newRequest = new joinGameWAuth(request,authToken);
-        this.makeRequest("PUT", path, newRequest, null);
+        this.makeRequest("PUT", path, request, null, authToken);
     }
 
     public void clear() throws ResponseException {
         var path = "/db";
-        this.makeRequest("DELETE", path, null, null);
+        this.makeRequest("DELETE", path, null, null, null);
     }
 
 
 
 
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
+    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authHeader) throws ResponseException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
+            if (!(authHeader == null)) { http.setRequestProperty("authorization", authHeader); }
             http.setDoOutput(true);
 
             writeBody(request, http);

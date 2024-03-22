@@ -83,8 +83,6 @@ public class GameService {
 
             String newBlkUsername = curGame.blackUsername();
             String newWhtUsername = curGame.whiteUsername();
-            System.out.println(jgRequest);
-            System.out.println(curGame);
             if (jgRequest.playerColor() == ChessGame.TeamColor.BLACK) {
                 if (newBlkUsername == null) {
                     newBlkUsername = curUsername;
