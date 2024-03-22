@@ -9,11 +9,9 @@ import requestRecords.JoinGameRequest;
 import requestRecords.LoginRequest;
 import requestRecords.RegisterRequest;
 import responseRecords.ListGameInfo;
-import responseRecords.ListGamesResponse;
 import server.Server;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,9 +24,9 @@ public class ServerFacadeTests {
     @BeforeAll
     public static void init() {
         server = new Server();
-        var port = server.run(8080);
+        var port = server.run(0);
         System.out.println("Started test HTTP server on " + port);
-        facade = new ServerFacade("http://localhost:8080");
+        facade = new ServerFacade("http://localhost:"+port);
     }
 
     @AfterAll
