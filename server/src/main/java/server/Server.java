@@ -3,8 +3,15 @@ package server;
 import handlers.AuthorizationHandler;
 import handlers.GameHandler;
 import spark.*;
+import webSocket.WebSocketHandler;
 
 public class Server {
+
+    WebSocketHandler webSocketHandler;
+
+    public Server (){
+        WebSocketHandler webSocketHandler = new WebSocketHandler();
+    }
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -13,6 +20,7 @@ public class Server {
 
         // Register your endpoints and handle exceptions here.
         //
+        Spark.webSocket("/connect", webSocketHandler);
         Spark.post("/user", (req, res) -> new AuthorizationHandler(req, res).register());
         Spark.post("/session", (req, res) -> new AuthorizationHandler(req, res).login());
         Spark.delete("/session", (req, res) -> new AuthorizationHandler(req, res).logout());
