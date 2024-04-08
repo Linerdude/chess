@@ -1,8 +1,14 @@
 package ui;
 
+import chess.ChessBoard;
+import chess.ChessGame;
+import chess.ChessPiece;
+import chess.ChessPosition;
+
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 import static java.lang.Math.abs;
@@ -41,6 +47,56 @@ public class DrawChessBoard {
         blankLine(out);
         ChessBoardForward(out);
 
+    }
+
+    public static void PrintCurBoard(PrintStream out, ChessBoard chessBoard){
+        for (int i = 0; i <= 7; i++){
+            ArrayList<String> curRow = new ArrayList<>();
+            ArrayList<Integer> curColor = new ArrayList<>();
+
+            for (int j = 0; j<=7; j++){
+                ChessPosition newPosition = new ChessPosition(i,j);
+                ChessPiece curPiece = chessBoard.getPiece(newPosition);
+                String curPieceString = "";
+
+                switch (curPiece.getPieceType()){
+                    case ROOK -> {
+                        curPieceString = rook;
+                        break;
+                    }
+                    case KNIGHT -> {
+                        curPieceString = knight;
+                        break;
+                    }
+                    case QUEEN -> {
+                        curPieceString = queen;
+                        break;
+                    }
+                    case BISHOP -> {
+                        curPieceString = bishop;
+                        break;
+                    }
+                    case PAWN -> {
+                        curPieceString = pawn;
+                        break;
+                    }
+                    case KING -> {
+                        curPieceString = king;
+                        break;
+                    }
+                    case null -> {
+                        curPieceString = "";
+                        break;
+                    }
+                }
+                if (curPiece.getTeamColor() == ChessGame.TeamColor.WHITE){
+                    curColor.add(0);
+                } else{
+                    curColor.add(1);
+                }
+                curRow.add(curPieceString);
+            }
+        }
     }
 
     public static void ChessBoardForward(PrintStream out){
