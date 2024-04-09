@@ -46,57 +46,93 @@ public class DrawChessBoard {
         blankLine(out);
         blankLine(out);
         ChessBoardForward(out);
+        blankLine(out);
 
     }
 
-    public static void PrintCurBoard(PrintStream out, ChessBoard chessBoard){
+    public static void PrintCurBoard(ChessBoard chessBoard, String teamColor){
+        var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
+
+        out.print(ERASE_SCREEN);
+
+        directionIndicator = 1;
+        letterHeaders = letterHeadersForward;
+
+        int[] rowNum;
+        if (Objects.equals(teamColor, "Black")){
+            rowNum = new int[]{1, 2, 3, 4, 5, 6, 7, 8};
+            chessBoard = flipBoard(chessBoard);
+            directionIndicator = 0;
+
+        }
+        else {
+            rowNum = new int[]{8, 7, 6, 5, 4, 3, 2, 1};
+            letterHeaders = letterHeadersReverse;
+        }
+
+        PrintString(out,null,null,"header", null);
+
         for (int i = 0; i <= 7; i++){
             ArrayList<String> curRow = new ArrayList<>();
             ArrayList<Integer> curColor = new ArrayList<>();
 
             for (int j = 0; j<=7; j++){
-                ChessPosition newPosition = new ChessPosition(i,j);
+                ChessPosition newPosition = new ChessPosition(i+1,j+1);
                 ChessPiece curPiece = chessBoard.getPiece(newPosition);
                 String curPieceString = "";
 
-                switch (curPiece.getPieceType()){
-                    case ROOK -> {
-                        curPieceString = rook;
-                        break;
+                if (curPiece!= null){
+
+                    switch (curPiece.getPieceType()) {
+                        case ROOK -> {
+                            curPieceString = rook;
+                            break;
+                        }
+                        case KNIGHT -> {
+                            curPieceString = knight;
+                            break;
+                        }
+                        case QUEEN -> {
+                            curPieceString = queen;
+                            break;
+                        }
+                        case BISHOP -> {
+                            curPieceString = bishop;
+                            break;
+                        }
+                        case PAWN -> {
+                            curPieceString = pawn;
+                            break;
+                        }
+                        case KING -> {
+                            curPieceString = king;
+                            break;
+                        }
+                        case null -> {
+                            curPieceString = "   ";
+                            break;
+                        }
                     }
-                    case KNIGHT -> {
-                        curPieceString = knight;
-                        break;
-                    }
-                    case QUEEN -> {
-                        curPieceString = queen;
-                        break;
-                    }
-                    case BISHOP -> {
-                        curPieceString = bishop;
-                        break;
-                    }
-                    case PAWN -> {
-                        curPieceString = pawn;
-                        break;
-                    }
-                    case KING -> {
-                        curPieceString = king;
-                        break;
-                    }
-                    case null -> {
-                        curPieceString = "";
-                        break;
-                    }
+                } else {
+                    curPieceString = "   ";
                 }
-                if (curPiece.getTeamColor() == ChessGame.TeamColor.WHITE){
-                    curColor.add(0);
-                } else{
+                if (curPiece != null) {
+                    if (curPiece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                        curColor.add(0);
+                    } else {
+                        curColor.add(1);
+                    }
+                } else {
                     curColor.add(1);
                 }
                 curRow.add(curPieceString);
             }
+            String[] rowToPrint = curRow.toArray(new String[0]);
+            Integer[] colorToPrint = curColor.toArray(new Integer[0]);
+            PrintString(out,rowToPrint,colorToPrint,"layer",rowNum[i]);
         }
+        PrintString(out,null,null,"header", null);
+        blankLine(out);
     }
 
     public static void ChessBoardForward(PrintStream out){
@@ -104,8 +140,8 @@ public class DrawChessBoard {
         letterHeaders = letterHeadersForward;
         PrintString(out,null,null,"header", null);
         String[] startingLineArray = {rook, knight, bishop, queen, king, bishop, knight, rook};
-        int[] colorArrayWhite = {0,0,0,0,0,0,0,0};
-        int[] colorArrayBlack = {1,1,1,1,1,1,1,1};
+        Integer[] colorArrayWhite = {0,0,0,0,0,0,0,0};
+        Integer[] colorArrayBlack = {1,1,1,1,1,1,1,1};
         PrintString(out,startingLineArray, colorArrayWhite,"layer", 1);
         String[] startingPawnArray = {pawn, pawn, pawn, pawn, pawn, pawn, pawn, pawn};
         PrintString(out,startingPawnArray,colorArrayWhite,"layer", 2);
@@ -124,8 +160,8 @@ public class DrawChessBoard {
         letterHeaders = letterHeadersReverse;
         PrintString(out,null,null,"header", null);
         String[] startingLineArray = {rook, knight, bishop, king, queen, bishop, knight, rook};
-        int[] colorArrayWhite = {0,0,0,0,0,0,0,0};
-        int[] colorArrayBlack = {1,1,1,1,1,1,1,1};
+        Integer[] colorArrayWhite = {0,0,0,0,0,0,0,0};
+        Integer[] colorArrayBlack = {1,1,1,1,1,1,1,1};
         PrintString(out,startingLineArray, colorArrayBlack,"layer", 8);
         String[] startingPawnArray = {pawn, pawn, pawn, pawn, pawn, pawn, pawn, pawn};
         PrintString(out,startingPawnArray,colorArrayBlack,"layer", 7);
@@ -139,7 +175,7 @@ public class DrawChessBoard {
         PrintString(out,null,null,"header", null);
     }
 
-    private static void PrintString(PrintStream out, String[] toPrint, int[] colorArray, String layer, Integer sideNum){
+    private static void PrintString(PrintStream out, String[] toPrint, Integer[] colorArray, String layer, Integer sideNum){
         if(Objects.equals(layer, "header")){
             StringBuilder headerToPrint = new StringBuilder();
             for (String letterHeader : letterHeaders) {
@@ -192,8 +228,42 @@ public class DrawChessBoard {
         out.print(outerBoarderTextColor);
     }
 
+    private static ChessBoard flipBoard(ChessBoard inBoard){
+        ChessBoard outBoard = new ChessBoard();
+        for (int i=0; i<=7; i++){
+            for (int j=0; j<=7; j++){
+                ChessPosition newPosition = new ChessPosition(i+1,j+1);
+                ChessPiece copyPiece = inBoard.getPiece(new ChessPosition(8-i,8-j));
+                outBoard.addPiece(newPosition, copyPiece);
+            }
+        }
+        return outBoard;
+    }
+
     public static void main(String[] args) {
-        ChessBoardToTerminal();
+//        ChessBoardToTerminal();
+
+        ChessPiece whiteKing = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING);
+        ChessPiece whitePawn = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+        ChessPiece blackRook = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
+        ChessPiece blackQueen = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN);
+
+        ChessPosition whitekingSetup = new ChessPosition(8,4);
+        ChessPosition whitePawnSetup = new ChessPosition(7,1);
+        ChessPosition blackRookSetup = new ChessPosition(1,1);
+        ChessPosition blackQueenSetup = new ChessPosition(1,5);
+
+        ChessBoard testBoard = new ChessBoard();
+
+        testBoard.addPiece(whitekingSetup,whiteKing);
+        testBoard.addPiece(whitePawnSetup,whitePawn);
+        testBoard.addPiece(blackRookSetup,blackRook);
+        testBoard.addPiece(blackQueenSetup,blackQueen);
+
+        PrintCurBoard(testBoard,"White");
+        PrintCurBoard(testBoard, "Black");
+
+
     }
 
     }

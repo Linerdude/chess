@@ -1,13 +1,11 @@
 package webSocket;
 
 import com.google.gson.Gson;
-import dataaccess.DataAccess;
-import exception.ResponseException;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
-import webSocketMessages.Action;
-import webSocketMessages.Notification;
+import webSocketMessages.userCommands.UserGameCommand;
+import webSocketMessages.serverMessages.ServerMessage;
 
 import java.io.IOException;
 import java.util.Timer;
@@ -20,34 +18,34 @@ public class WebSocketHandler {
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException {
-        Action action = new Gson().fromJson(message, Action.class);
-        switch (action.type()) {
-            case ENTER -> enter(action.visitorName(), session);
-            case EXIT -> exit(action.visitorName());
+        UserGameCommand action = new Gson().fromJson(message, UserGameCommand.class);
+        switch (UserGameCommand.getCommandType()) {
+            case JOIN_PLAYER -> joinPlayer(message, session);
+            case JOIN_OBSERVER -> joinObserver(message, session);
+            case MAKE_MOVE -> makeMove(message,session);
+            case LEAVE -> leave(message,session);
+            case RESIGN -> resign(message,session);
         }
     }
 
-    private void enter(String visitorName, Session session) throws IOException {
-        connections.add(visitorName, session);
-        var message = String.format("%s is in the shop", visitorName);
-        var notification = new Notification(Notification.Type.ARRIVAL, message);
-        connections.broadcast(visitorName, notification);
+    public void joinPlayer(String msg, Session session){
+
     }
 
-    private void exit(String visitorName) throws IOException {
-        connections.remove(visitorName);
-        var message = String.format("%s left the shop", visitorName);
-        var notification = new Notification(Notification.Type.DEPARTURE, message);
-        connections.broadcast(visitorName, notification);
+    public void joinObserver(String msg, Session session){
+
     }
 
-    public void makeNoise(String petName, String sound) throws ResponseException {
-        try {
-            var message = String.format("%s says %s", petName, sound);
-            var notification = new Notification(Notification.Type.NOISE, message);
-            connections.broadcast("", notification);
-        } catch (Exception ex) {
-            throw new ResponseException(500, ex.getMessage());
-        }
+    public void makeMove(String msg, Session session){
+
     }
+
+    public void leave(String msg, Session session){
+
+    }
+
+    public void resign(String msg, Session session){
+
+    }
+
 }

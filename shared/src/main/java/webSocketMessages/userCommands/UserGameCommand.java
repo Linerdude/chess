@@ -22,7 +22,7 @@ public class UserGameCommand {
         RESIGN
     }
 
-    protected CommandType commandType;
+    protected static CommandType commandType;
 
     private final String authToken;
 
@@ -30,8 +30,8 @@ public class UserGameCommand {
         return authToken;
     }
 
-    public CommandType getCommandType() {
-        return this.commandType;
+    public static CommandType getCommandType() {
+        return commandType;
     }
 
     @Override
