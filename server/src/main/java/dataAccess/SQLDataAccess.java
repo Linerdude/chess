@@ -244,6 +244,35 @@ public class SQLDataAccess implements DataAccess {
         }
     }
 
+    public void removeUser(GameData game, ChessGame.TeamColor playerColor) {
+        String username = null;
+        if (playerColor == ChessGame.TeamColor.WHITE) {
+            if (game.whiteUsername() != null) {
+                String statement = "UPDATE games SET whiteUsername = NULL WHERE gameID = ?";
+                try (var con = DatabaseManager.getConnection();
+                     var stmt = con.prepareStatement(statement)) {
+//                    stmt.setString(1, null);
+                    stmt.setInt(1, game.gameID());
+                    stmt.executeUpdate();
+                } catch (SQLException | DataAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        } else if (game.blackUsername() != null) {
+            if (game.whiteUsername() != null) {
+                String statement = "UPDATE games SET blackUsername = NULL WHERE gameID = ?";
+                try (var con = DatabaseManager.getConnection();
+                     var stmt = con.prepareStatement(statement)) {
+//                    stmt.setString(1, null);
+                    stmt.setInt(1, game.gameID());
+                    stmt.executeUpdate();
+                } catch (SQLException | DataAccessException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
         @Override
     public UserData addUser(UserData user) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {

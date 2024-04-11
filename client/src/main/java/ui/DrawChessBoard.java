@@ -1,15 +1,11 @@
 package ui;
 
-import chess.ChessBoard;
-import chess.ChessGame;
-import chess.ChessPiece;
-import chess.ChessPosition;
+import chess.*;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.*;
 
 import static java.lang.Math.abs;
 import static ui.EscapeSequences.*;
@@ -27,8 +23,8 @@ public class DrawChessBoard {
     static String rook = " R ";
     static String pawn = " P ";
 
-    private static final String boardColor1 = SET_BG_COLOR_LIGHT_GREY;
-    private static final String boardColor2 = SET_BG_COLOR_DARK_GREY;
+    private static String boardColor1 = SET_BG_COLOR_LIGHT_GREY;
+    private static String boardColor2 = SET_BG_COLOR_DARK_GREY;
     private static final String teamText1 = SET_TEXT_COLOR_BLACK;
     private static final String teamText2 = SET_TEXT_COLOR_WHITE;
     private static final String outerBoarderColor = SET_BG_COLOR_WHITE;
@@ -50,7 +46,12 @@ public class DrawChessBoard {
 
     }
 
-    public static void PrintCurBoard(ChessBoard chessBoard, String teamColor){
+    public static void PrintCurBoard(ChessGame chessGame, String teamColor) {
+        PrintCurBoard(chessGame,teamColor,null);
+    }
+
+
+        public static void PrintCurBoard(ChessGame chessGame, String teamColor, int[] pos){
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
         out.print(ERASE_SCREEN);
@@ -58,10 +59,26 @@ public class DrawChessBoard {
         directionIndicator = 1;
         letterHeaders = letterHeadersForward;
 
+        int [][] validMoveArray = new int[8][8];
+        ChessBoard chessBoard = new ChessBoard(chessGame.getBoard());
+
+        if (pos != null) {
+            ChessPosition curPosition = new ChessPosition(pos[0]+1,pos[1]+1);
+//            ChessPiece curPiece = chessBoard.getPiece(curPosition);
+//            HashSet<ChessMove> curMoves =  curPiece.pieceMoves(chessBoard,curPosition);
+            HashSet<ChessMove> curMoves = chessGame.validMoves(curPosition);
+            for (ChessMove move : curMoves){
+                ChessPosition endPos = move.getEndPosition();
+                validMoveArray[endPos.getRow()-1][endPos.getColumn()-1] = 1;
+            }
+            validMoveArray[pos[0]][pos[1]] = 2;
+        }
+
         int[] rowNum;
-        if (Objects.equals(teamColor, "Black")){
+        if (Objects.equals(teamColor, "White")){
             rowNum = new int[]{1, 2, 3, 4, 5, 6, 7, 8};
             chessBoard = flipBoard(chessBoard);
+            validMoveArray = flipArray(validMoveArray);
             directionIndicator = 0;
 
         }
@@ -129,7 +146,7 @@ public class DrawChessBoard {
             }
             String[] rowToPrint = curRow.toArray(new String[0]);
             Integer[] colorToPrint = curColor.toArray(new Integer[0]);
-            PrintString(out,rowToPrint,colorToPrint,"layer",rowNum[i]);
+            PrintString(out,rowToPrint,colorToPrint,"layer",rowNum[i], validMoveArray[i]);
         }
         PrintString(out,null,null,"header", null);
         blankLine(out);
@@ -176,6 +193,10 @@ public class DrawChessBoard {
     }
 
     private static void PrintString(PrintStream out, String[] toPrint, Integer[] colorArray, String layer, Integer sideNum){
+        PrintString(out,toPrint,colorArray,layer,sideNum, null);
+    }
+
+    private static void PrintString(PrintStream out, String[] toPrint, Integer[] colorArray, String layer, Integer sideNum, int[] isValidMove){
         if(Objects.equals(layer, "header")){
             StringBuilder headerToPrint = new StringBuilder();
             for (String letterHeader : letterHeaders) {
@@ -192,6 +213,16 @@ public class DrawChessBoard {
             int counter = 0;
             int evenOrOdd = sideNum % 2;
             for (String curPiece : toPrint) {
+                if (isValidMove[counter] == 1){
+                    boardColor1 = SET_BG_COLOR_GREEN;
+                    boardColor2 = SET_BG_COLOR_DARK_GREEN;
+                } else if (isValidMove[counter] == 2){
+                    boardColor1 = SET_BG_COLOR_BLUE;
+                    boardColor2 = SET_BG_COLOR_BLUE;
+                } else {
+                    boardColor1 = SET_BG_COLOR_LIGHT_GREY;
+                    boardColor2 = SET_BG_COLOR_DARK_GREY;
+                }
                 counter++;
                 if (counter % 2 == abs(evenOrOdd-directionIndicator)) {
                     out.print(boardColor1);
@@ -240,18 +271,30 @@ public class DrawChessBoard {
         return outBoard;
     }
 
+    private static int[][] flipArray(int[][] inArray){
+        int[][] outArray = new int[8][8];
+        for (int i=0; i<=7; i++){
+            for (int j=0; j<=7; j++){
+                outArray[7-i][7-j] = inArray[i][j];
+            }
+        }
+        return  outArray;
+    }
+
     public static void main(String[] args) {
 //        ChessBoardToTerminal();
+
+        ChessGame newGame = new ChessGame();
 
         ChessPiece whiteKing = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING);
         ChessPiece whitePawn = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
         ChessPiece blackRook = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
         ChessPiece blackQueen = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN);
 
-        ChessPosition whitekingSetup = new ChessPosition(8,4);
-        ChessPosition whitePawnSetup = new ChessPosition(7,1);
-        ChessPosition blackRookSetup = new ChessPosition(1,1);
-        ChessPosition blackQueenSetup = new ChessPosition(1,5);
+        ChessPosition whitekingSetup = new ChessPosition(1,5);
+        ChessPosition whitePawnSetup = new ChessPosition(2,2);
+        ChessPosition blackRookSetup = new ChessPosition(8,1);
+        ChessPosition blackQueenSetup = new ChessPosition(8,4);
 
         ChessBoard testBoard = new ChessBoard();
 
@@ -260,8 +303,11 @@ public class DrawChessBoard {
         testBoard.addPiece(blackRookSetup,blackRook);
         testBoard.addPiece(blackQueenSetup,blackQueen);
 
-        PrintCurBoard(testBoard,"White");
-        PrintCurBoard(testBoard, "Black");
+        newGame.setBoard(testBoard);
+
+        int[] pos = {0,4};
+        PrintCurBoard(newGame,"White", pos);
+        PrintCurBoard(newGame, "Black",pos);
 
 
     }

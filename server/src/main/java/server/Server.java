@@ -1,5 +1,7 @@
 package server;
 
+import dataAccess.DataAccessException;
+import dataAccess.SQLDataAccess;
 import handlers.AuthorizationHandler;
 import handlers.GameHandler;
 import spark.*;
@@ -7,10 +9,21 @@ import webSocket.WebSocketHandler;
 
 public class Server {
 
+    SQLDataAccess authDAO;
+    SQLDataAccess gameDAO;
+    SQLDataAccess userDAO;
     WebSocketHandler webSocketHandler;
 
     public Server (){
-        WebSocketHandler webSocketHandler = new WebSocketHandler();
+        try {
+            SQLDataAccess authDAO = new SQLDataAccess();
+            SQLDataAccess gameDAO = new SQLDataAccess();
+            SQLDataAccess userDAO = new SQLDataAccess();
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+
+        WebSocketHandler webSocketHandler = new WebSocketHandler(authDAO,gameDAO,userDAO);
     }
 
     public int run(int desiredPort) {

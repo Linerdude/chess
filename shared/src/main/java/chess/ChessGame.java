@@ -14,8 +14,10 @@ public class ChessGame {
     private ChessBoard tempBoard;
     private TeamColor teamTurn;
 
-    public ChessGame() {
+    public Boolean isGameOver;
 
+    public ChessGame() {
+        isGameOver = false;
     }
 
     /**
@@ -40,6 +42,10 @@ public class ChessGame {
     public enum TeamColor {
         WHITE,
         BLACK
+    }
+
+    public void setGameOver(Boolean isOver){
+        isGameOver = isOver;
     }
 
     /**
@@ -75,11 +81,11 @@ public class ChessGame {
             curBoard.addPiece(curMove.endPosition, curPiece);
             curBoard.addPiece(curMove.startPosition,null);
 
-            System.out.println(curBoard);
+//            System.out.println(curBoard);
 
             if (isInCheck(curTeamColor)){
-                System.out.println(curBoard);
-                System.out.println("move will result in check");
+//                System.out.println(curBoard);
+//                System.out.println("move will result in check");
 
                 curBoard.addPiece(curMove.endPosition,endPiece);
                 curBoard.addPiece(curMove.startPosition,curPiece);
