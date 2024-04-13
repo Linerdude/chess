@@ -38,20 +38,20 @@ public class DrawChessBoard {
 
         out.print(ERASE_SCREEN);
 
-        ChessBoardReverse(out);
+        chessBoardReverse(out);
         blankLine(out);
         blankLine(out);
-        ChessBoardForward(out);
+        chessBoardForward(out);
         blankLine(out);
 
     }
 
-    public static void PrintCurBoard(ChessGame chessGame, String teamColor) {
-        PrintCurBoard(chessGame,teamColor,null);
+    public static void printCurBoard(ChessGame chessGame, String teamColor) {
+        printCurBoard(chessGame,teamColor,null);
     }
 
 
-        public static void PrintCurBoard(ChessGame chessGame, String teamColor, int[] pos){
+        public static void printCurBoard(ChessGame chessGame, String teamColor, int[] pos){
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
         out.print(ERASE_SCREEN);
@@ -87,7 +87,7 @@ public class DrawChessBoard {
             letterHeaders = letterHeadersReverse;
         }
 
-        PrintString(out,null,null,"header", null);
+        printString(out,null,null,"header", null);
 
         for (int i = 0; i <= 7; i++){
             ArrayList<String> curRow = new ArrayList<>();
@@ -146,57 +146,57 @@ public class DrawChessBoard {
             }
             String[] rowToPrint = curRow.toArray(new String[0]);
             Integer[] colorToPrint = curColor.toArray(new Integer[0]);
-            PrintString(out,rowToPrint,colorToPrint,"layer",rowNum[i], validMoveArray[i]);
+            printString(out,rowToPrint,colorToPrint,"layer",rowNum[i], validMoveArray[i]);
         }
-        PrintString(out,null,null,"header", null);
+        printString(out,null,null,"header", null);
         blankLine(out);
     }
 
-    public static void ChessBoardForward(PrintStream out){
+    public static void chessBoardForward(PrintStream out){
         directionIndicator = 0;
         letterHeaders = letterHeadersForward;
-        PrintString(out,null,null,"header", null);
+        printString(out,null,null,"header", null);
         String[] startingLineArray = {rook, knight, bishop, queen, king, bishop, knight, rook};
         Integer[] colorArrayWhite = {0,0,0,0,0,0,0,0};
         Integer[] colorArrayBlack = {1,1,1,1,1,1,1,1};
-        PrintString(out,startingLineArray, colorArrayWhite,"layer", 1);
+        printString(out,startingLineArray, colorArrayWhite,"layer", 1);
         String[] startingPawnArray = {pawn, pawn, pawn, pawn, pawn, pawn, pawn, pawn};
-        PrintString(out,startingPawnArray,colorArrayWhite,"layer", 2);
+        printString(out,startingPawnArray,colorArrayWhite,"layer", 2);
         String[] emptyRowArray = {"   ","   ","   ","   ","   ","   ","   ","   "};
-        PrintString(out,emptyRowArray,colorArrayWhite,"layer", 3);
-        PrintString(out,emptyRowArray,colorArrayWhite,"layer", 4);
-        PrintString(out,emptyRowArray,colorArrayBlack,"layer", 5);
-        PrintString(out,emptyRowArray,colorArrayBlack,"layer", 6);
-        PrintString(out,startingPawnArray,colorArrayBlack,"layer", 7);
-        PrintString(out,startingLineArray,colorArrayBlack,"layer", 8);
-        PrintString(out,null,null,"header", null);
+        printString(out,emptyRowArray,colorArrayWhite,"layer", 3);
+        printString(out,emptyRowArray,colorArrayWhite,"layer", 4);
+        printString(out,emptyRowArray,colorArrayBlack,"layer", 5);
+        printString(out,emptyRowArray,colorArrayBlack,"layer", 6);
+        printString(out,startingPawnArray,colorArrayBlack,"layer", 7);
+        printString(out,startingLineArray,colorArrayBlack,"layer", 8);
+        printString(out,null,null,"header", null);
     }
 
-    public static void ChessBoardReverse(PrintStream out){
+    public static void chessBoardReverse(PrintStream out){
         directionIndicator = 1;
         letterHeaders = letterHeadersReverse;
-        PrintString(out,null,null,"header", null);
+        printString(out,null,null,"header", null);
         String[] startingLineArray = {rook, knight, bishop, king, queen, bishop, knight, rook};
         Integer[] colorArrayWhite = {0,0,0,0,0,0,0,0};
         Integer[] colorArrayBlack = {1,1,1,1,1,1,1,1};
-        PrintString(out,startingLineArray, colorArrayBlack,"layer", 8);
+        printString(out,startingLineArray, colorArrayBlack,"layer", 8);
         String[] startingPawnArray = {pawn, pawn, pawn, pawn, pawn, pawn, pawn, pawn};
-        PrintString(out,startingPawnArray,colorArrayBlack,"layer", 7);
+        printString(out,startingPawnArray,colorArrayBlack,"layer", 7);
         String[] emptyRowArray = {"   ","   ","   ","   ","   ","   ","   ","   "};
-        PrintString(out,emptyRowArray,colorArrayBlack,"layer", 6);
-        PrintString(out,emptyRowArray,colorArrayBlack,"layer", 5);
-        PrintString(out,emptyRowArray,colorArrayWhite,"layer", 4);
-        PrintString(out,emptyRowArray,colorArrayWhite,"layer", 3);
-        PrintString(out,startingPawnArray,colorArrayWhite,"layer", 2);
-        PrintString(out,startingLineArray,colorArrayWhite,"layer", 1);
-        PrintString(out,null,null,"header", null);
+        printString(out,emptyRowArray,colorArrayBlack,"layer", 6);
+        printString(out,emptyRowArray,colorArrayBlack,"layer", 5);
+        printString(out,emptyRowArray,colorArrayWhite,"layer", 4);
+        printString(out,emptyRowArray,colorArrayWhite,"layer", 3);
+        printString(out,startingPawnArray,colorArrayWhite,"layer", 2);
+        printString(out,startingLineArray,colorArrayWhite,"layer", 1);
+        printString(out,null,null,"header", null);
     }
 
-    private static void PrintString(PrintStream out, String[] toPrint, Integer[] colorArray, String layer, Integer sideNum){
-        PrintString(out,toPrint,colorArray,layer,sideNum, null);
+    private static void printString(PrintStream out, String[] toPrint, Integer[] colorArray, String layer, Integer sideNum){
+        printString(out,toPrint,colorArray,layer,sideNum, null);
     }
 
-    private static void PrintString(PrintStream out, String[] toPrint, Integer[] colorArray, String layer, Integer sideNum, int[] isValidMove){
+    private static void printString(PrintStream out, String[] toPrint, Integer[] colorArray, String layer, Integer sideNum, int[] isValidMove){
         if(Objects.equals(layer, "header")){
             StringBuilder headerToPrint = new StringBuilder();
             for (String letterHeader : letterHeaders) {
@@ -282,7 +282,7 @@ public class DrawChessBoard {
     }
 
     public static void main(String[] args) {
-//        ChessBoardToTerminal();
+        ChessBoardToTerminal();
 
         ChessGame newGame = new ChessGame();
 
@@ -306,8 +306,8 @@ public class DrawChessBoard {
         newGame.setBoard(testBoard);
 
         int[] pos = {0,4};
-        PrintCurBoard(newGame,"WHITE", pos);
-        PrintCurBoard(newGame, "Black",pos);
+        printCurBoard(newGame,"WHITE", pos);
+        printCurBoard(newGame, "Black",pos);
 
 
     }

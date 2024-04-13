@@ -123,10 +123,6 @@ public class WebSocketHandler {
         gamesAndUsers.put(gameInfo.gameID(), clientsInGame);
         Notification notif = new Notification(ServerMessage.ServerMessageType.NOTIFICATION, message);
         ConnectionManager c = gameOrganizer.get(join.gameID);
-//        for (String client : clientsInGame){
-////            c.broadcast(client, notif);
-//            c.clientNotify(client, notification);
-//        }
         c.broadcast(auth.authToken(), notif);
         c.clientNotify(auth.authToken(), notification);
     }

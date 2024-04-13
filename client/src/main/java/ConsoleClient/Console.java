@@ -69,13 +69,10 @@ public class Console implements NotificationHandler {
         String unrecognizedCommandString = "Command not recognized. Type help to list available commands.\n";
         assert !userInput.isEmpty();
         String firstCommand = userInput.getFirst().toLowerCase();
-        if (firstCommand.isEmpty()) {
-            return;
-        }
+        if (firstCommand.isEmpty()) {return;}
         else if (!validCommands.contains(firstCommand)) {
             System.out.print(unrecognizedCommandString);
-            return;
-        }
+            return;}
         ArrayList<String> userArgs;
         userArgs = userInput;
         userArgs.removeFirst();
@@ -124,7 +121,6 @@ public class Console implements NotificationHandler {
                             highlightValidMoves(userArgs);
                         } else { invalidInput = true; }
                     }
-
                 }
             } else {
                     switch (firstCommand) {
@@ -164,12 +160,8 @@ public class Console implements NotificationHandler {
                     } else { invalidInput = true; }
                 }
             }
-            if (invalidInput) {
-                System.out.print("Invalid command input. Type help and format your command according to the menu.\n");
-            }
-        } catch (ResponseException | InvalidMoveException ex) {
-            System.out.print("An error occurred while communicating with the server: " + ex.getMessage() + "\n");
-        }
+            if (invalidInput) {System.out.print("Invalid command input. Type help and format your command according to the menu.\n");}
+        } catch (ResponseException | InvalidMoveException ex) {System.out.print("An error occurred while communicating with the server: " + ex.getMessage() + "\n");}
     }
 
     private boolean isValidInput(ArrayList<String> userInput, ArrayList<String> validTypes) {
@@ -308,13 +300,6 @@ public class Console implements NotificationHandler {
         // Default board printing for phase 5
         //     Actual implementation will be done via websockets in phase 6
         System.out.print("GameID: " + gameID + "\n");
-//        ArrayList<ListGameInfo> games = server.listGames(this.userAuthToken).games();
-//        for (ListGameInfo curGame : games){
-//            if (curGame.gameID() == gameID){
-//                game.;
-//            }
-//        }
-//        redrawBoard();
     }
 
     private void observe(ArrayList<String> userArgs) throws ResponseException {
@@ -359,22 +344,6 @@ public class Console implements NotificationHandler {
                 System.out.println("not a valid move");
             }
 
-//            ChessPiece.PieceType promoPiece = null;
-//            if (userArgs.size() == 5) {
-//                String promotionPieceType = userArgs.get(4);
-//                if (promotionPieceType.equalsIgnoreCase("ROOK")) {
-//                    promoPiece = ChessPiece.PieceType.ROOK;
-//                }
-//                if (promotionPieceType.equalsIgnoreCase("QUEEN")) {
-//                    promoPiece = ChessPiece.PieceType.QUEEN;
-//                }
-//                if (promotionPieceType.equalsIgnoreCase("BISHOP")) {
-//                    promoPiece = ChessPiece.PieceType.BISHOP;
-//                }
-//                if (promotionPieceType.equalsIgnoreCase("KNIGHT")) {
-//                    promoPiece = ChessPiece.PieceType.KNIGHT;
-//                }
-//            }
 
         }
     }
@@ -382,7 +351,7 @@ public class Console implements NotificationHandler {
     private void highlightValidMoves(ArrayList<String> userArgs){
         int startCol = userArgs.get(0).toLowerCase().charAt(0) - 'a' + 1;
         int startRow = Integer.parseInt(userArgs.get(1));
-        DrawChessBoard.PrintCurBoard(game.game(),color, new int[]{startRow, startCol});
+        DrawChessBoard.printCurBoard(game.game(),color, new int[]{startRow, startCol});
     }
 
     private void quit() throws ResponseException {
@@ -402,7 +371,7 @@ public class Console implements NotificationHandler {
     }
 
     private void redrawBoard(){
-        DrawChessBoard.PrintCurBoard(game.game(),color);
+        DrawChessBoard.printCurBoard(game.game(),color);
     }
 
     @Override
