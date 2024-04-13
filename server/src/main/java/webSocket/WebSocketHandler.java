@@ -19,7 +19,6 @@ import webSocketMessages.userCommands.JoinPlayer;
 
 import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.*;
-import chess.moveRules.*;
 
 
 import java.io.IOException;
@@ -76,7 +75,7 @@ public class WebSocketHandler {
                 if (gameInfo != null) {
                     if(join.playerColor == ChessGame.TeamColor.WHITE) {
                         if (Objects.equals(auth.username(), gameInfo.whiteUsername())) {
-                            JoinPlayerManager(auth, join, gameInfo, authToken);
+                            joinPlayerManager(auth, join, gameInfo, authToken);
                         }else{
                             Error notification = new Error(ServerMessage.ServerMessageType.ERROR, "player hasn't joined game properly");
                             ConnectionManager c = gameOrganizer.get(join.gameID);
@@ -85,7 +84,7 @@ public class WebSocketHandler {
                         }
                     }else {
                         if (Objects.equals(auth.username(), gameInfo.blackUsername())) {
-                            JoinPlayerManager(auth, join, gameInfo, authToken);
+                            joinPlayerManager(auth, join, gameInfo, authToken);
                         } else {
                             ConnectionManager c = gameOrganizer.get(join.gameID);
                             Error notification = new Error(ServerMessage.ServerMessageType.ERROR, "player hasn't joined game properly");
@@ -110,7 +109,7 @@ public class WebSocketHandler {
         }
     }
 
-    private void JoinPlayerManager(AuthData auth, JoinPlayer join, GameData gameInfo, String authToken) throws IOException {
+    private void joinPlayerManager(AuthData auth, JoinPlayer join, GameData gameInfo, String authToken) throws IOException {
         String message = String.format("%s joined as %s player", auth.username(), join.playerColor);
         LoadGame notification = new LoadGame(ServerMessage.ServerMessageType.LOAD_GAME, gameInfo);
         List<String>clientsInGame =  gamesAndUsers.get(gameInfo.gameID());

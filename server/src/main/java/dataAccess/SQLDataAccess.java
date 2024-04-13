@@ -7,7 +7,6 @@ import model.GameData;
 import model.UserData;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import javax.xml.crypto.Data;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,11 +19,11 @@ public class SQLDataAccess implements DataAccess {
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }
-        CreateTables();
+        createTables();
 
     }
 
-    public void CreateTables() throws DataAccessException {
+    public void createTables() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
 
 
@@ -280,7 +279,6 @@ public class SQLDataAccess implements DataAccess {
                 BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
                 String hashedPassword = encoder.encode(user.password());
 
-//                TODO: fix hashed password, esp in getUser below
                 preparedStatement.setString(1, user.username());
                 preparedStatement.setString(2, hashedPassword);
                 preparedStatement.setString(3, user.email());

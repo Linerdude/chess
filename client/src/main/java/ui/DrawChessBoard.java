@@ -33,7 +33,7 @@ public class DrawChessBoard {
 
     private static int directionIndicator = 0;
 
-    public static void ChessBoardToTerminal(){
+    public static void chessBoardToTerminal(){
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
         out.print(ERASE_SCREEN);
@@ -282,7 +282,7 @@ public class DrawChessBoard {
     }
 
     public static void main(String[] args) {
-        ChessBoardToTerminal();
+        chessBoardToTerminal();
 
         ChessGame newGame = new ChessGame();
 
