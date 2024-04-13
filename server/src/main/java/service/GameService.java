@@ -1,24 +1,19 @@
 package service;
 
-import chess.ChessBoard;
 import chess.ChessGame;
-import chess.ChessPiece;
 import dataAccess.DataAccessException;
 import dataAccess.SQLDataAccess;
-import handlers.ServiceHandler;
 import model.AuthData;
 import model.GameData;
-import dataAccess.MemoryDataAccess;
 
 import requestRecords.CreateGameRequest;
 import requestRecords.JoinGameRequest;
 import responseRecords.ListGamesResponse;
 import responseRecords.ListGameInfo;
 import responseRecords.CreateGameResponse;
-import java.lang.reflect.Array;
+
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Objects;
 
 public class GameService {
 //    private final MemoryDataAccess dataAccess = new MemoryDataAccess();

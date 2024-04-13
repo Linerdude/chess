@@ -1,9 +1,7 @@
 package ServerFacade;
 
-import chess.ChessGame;
 import com.google.gson.Gson;
 import exception.ResponseException;
-import model.*;
 import requestRecords.CreateGameRequest;
 import requestRecords.JoinGameRequest;
 import requestRecords.LoginRequest;

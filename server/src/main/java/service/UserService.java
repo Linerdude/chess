@@ -1,21 +1,15 @@
 package service;
 
 import dataAccess.DataAccessException;
-import dataAccess.MemoryDataAccess;
 import dataAccess.SQLDataAccess;
-import handlers.ServiceHandler;
 import model.AuthData;
 import model.UserData;
-import org.eclipse.jetty.server.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import requestRecords.RegisterRequest;
 import requestRecords.LoginRequest;
 import responseRecords.RegisterResponse;
 import responseRecords.LoginResponse;
-import spark.*;
 
-import java.util.ArrayList;
-import java.util.Objects;
 import java.util.UUID;
 
 public class UserService {
