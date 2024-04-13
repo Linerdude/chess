@@ -248,7 +248,7 @@ public class SQLDataAccess implements DataAccess {
         String username = null;
         if (playerColor == ChessGame.TeamColor.WHITE) {
             if (game.whiteUsername() != null) {
-                String statement = "UPDATE games SET whiteUsername = NULL WHERE gameID = ?";
+                String statement = "UPDATE gameTable SET whiteUsername = NULL WHERE gameID = ?";
                 try (var con = DatabaseManager.getConnection();
                      var stmt = con.prepareStatement(statement)) {
 //                    stmt.setString(1, null);
@@ -260,7 +260,7 @@ public class SQLDataAccess implements DataAccess {
             }
         } else if (game.blackUsername() != null) {
             if (game.whiteUsername() != null) {
-                String statement = "UPDATE games SET blackUsername = NULL WHERE gameID = ?";
+                String statement = "UPDATE gameTable SET blackUsername = NULL WHERE gameID = ?";
                 try (var con = DatabaseManager.getConnection();
                      var stmt = con.prepareStatement(statement)) {
 //                    stmt.setString(1, null);

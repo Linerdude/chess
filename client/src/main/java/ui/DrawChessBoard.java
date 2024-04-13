@@ -75,7 +75,7 @@ public class DrawChessBoard {
         }
 
         int[] rowNum;
-        if (Objects.equals(teamColor, "White")){
+        if (Objects.equals(teamColor, "WHITE")){
             rowNum = new int[]{1, 2, 3, 4, 5, 6, 7, 8};
             chessBoard = flipBoard(chessBoard);
             validMoveArray = flipArray(validMoveArray);
@@ -306,7 +306,7 @@ public class DrawChessBoard {
         newGame.setBoard(testBoard);
 
         int[] pos = {0,4};
-        PrintCurBoard(newGame,"White", pos);
+        PrintCurBoard(newGame,"WHITE", pos);
         PrintCurBoard(newGame, "Black",pos);
 
 

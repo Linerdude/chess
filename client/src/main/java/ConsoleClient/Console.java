@@ -1,31 +1,50 @@
 package ConsoleClient;
 
 import ServerFacade.ServerFacade;
-import chess.ChessGame;
-import chess.ChessPiece;
+import chess.*;
+import com.google.gson.Gson;
 import exception.ResponseException;
+import model.GameData;
 import requestRecords.CreateGameRequest;
 import requestRecords.JoinGameRequest;
 import requestRecords.LoginRequest;
 import requestRecords.RegisterRequest;
 import responseRecords.*;
 import ui.DrawChessBoard;
+import webSocket.NotificationHandler;
+import webSocket.WebSocketFacade;
+import webSocketMessages.serverMessages.LoadGame;
+import webSocketMessages.serverMessages.Error;
+import webSocketMessages.serverMessages.Notification;
+import webSocketMessages.serverMessages.ServerMessage;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
-public class Console {
-    private final ServerFacade server = new ServerFacade("http://localhost:8080");
+public class Console implements NotificationHandler {
+    private final ServerFacade server;
     private boolean userAuthorized;
     private String userAuthToken;
     private boolean running = true;
     private boolean printLoggedOutMenu = true;
     private boolean printLoggedInMenu = false;
+    private String color;
+    private boolean inGame = false;
+    public static String serverURL;
+    public static GameData game;
+    public WebSocketFacade socket;
 
     ArrayList<String> validCommands = new ArrayList<>(Arrays.asList("register", "login", "list", "create",
             "join", "observe", "logout", "quit", "help"));
+
+    public Console(int port) throws ResponseException {
+        String p = String.valueOf(port);
+        serverURL = "http://localhost:" + p;
+        socket = new WebSocketFacade(serverURL, this);
+        server = new ServerFacade(serverURL);
+    }
 
     public void run() {
         while (this.running) {
@@ -76,33 +95,64 @@ public class Console {
                         } else { invalidInput = true; }
                     }
                 }
-            } else {
+            } else if (inGame) {
                 switch (firstCommand) {
-                    case "list" -> {
-                        if (userArgs.isEmpty()) { list();
+                    case "redraw" -> {
+                        if (userArgs.isEmpty()){
+                            redrawBoard();
                         } else { invalidInput = true; }
                     }
-                    case "create" -> {
-                        validate = new ArrayList<>(List.of("str"));
-                        if (isValidInput(userArgs, validate)) { create(userArgs);
+                    case "leave" -> {
+                        if (userArgs.isEmpty()){
+                            leave();
                         } else { invalidInput = true; }
                     }
-                    case "join" -> {
-                        validate = new ArrayList<>(Arrays.asList("int", "str"));
-                        if (isValidInput(userArgs, validate)) { join(userArgs);
-                        } else { invalidInput = true; }
-                    }
-                    case "observe" -> {
+                    case "make" -> {
                         validate = new ArrayList<>(List.of("int"));
-                        if (isValidInput(userArgs, validate)) { observe(userArgs);
+                        if (isValidInput(userArgs,validate)){
+                            makeMove(userArgs);
                         } else { invalidInput = true; }
                     }
-                    case "logout" -> {
-                        if (userArgs.isEmpty()) { logout();
+                    case "resign" -> {
+                        if (userArgs.isEmpty()){
+                            resign();
                         } else { invalidInput = true; }
+                    }
+                    case "highlight" -> {
+                        validate = new ArrayList<>(List.of("int"));
+                        if (isValidInput(userArgs,validate)){
+                            highlightValidMoves(userArgs);
+                        } else { invalidInput = true; }
+                    }
+
+                }
+            } else {
+                    switch (firstCommand) {
+                        case "list" -> {
+                            if (userArgs.isEmpty()) { list();
+                            } else { invalidInput = true; }
+                        }
+                        case "create" -> {
+                            validate = new ArrayList<>(List.of("str"));
+                            if (isValidInput(userArgs, validate)) { create(userArgs);
+                            } else { invalidInput = true; }
+                        }
+                        case "join" -> {
+                            validate = new ArrayList<>(Arrays.asList("int", "str"));
+                            if (isValidInput(userArgs, validate)) { join(userArgs);
+                            } else { invalidInput = true; }
+                        }
+                        case "observe" -> {
+                            validate = new ArrayList<>(List.of("int"));
+                            if (isValidInput(userArgs, validate)) { observe(userArgs);
+                            } else { invalidInput = true; }
+                        }
+                        case "logout" -> {
+                            if (userArgs.isEmpty()) { logout();
+                            } else { invalidInput = true; }
+                        }
                     }
                 }
-            }
             // Always-available options
             switch (firstCommand) {
                 case "quit" -> {
@@ -117,7 +167,7 @@ public class Console {
             if (invalidInput) {
                 System.out.print("Invalid command input. Type help and format your command according to the menu.\n");
             }
-        } catch (ResponseException ex) {
+        } catch (ResponseException | InvalidMoveException ex) {
             System.out.print("An error occurred while communicating with the server: " + ex.getMessage() + "\n");
         }
     }
@@ -161,6 +211,20 @@ public class Console {
                 help - lists available commands
             
             """, getUserAuthStatusAsString(this.userAuthorized));
+        System.out.print(printString);
+    }
+
+    private void printInGameMenu(){
+        String printString = String.format("""
+                
+                %s OPTIONS
+                    redraw - redraws the board
+                    leave - leaves current game
+                    move <COL ROW> <COL ROW> - Make chess move i.e. A1
+                    resign - forfeits the game. Does not leave game
+                    highlight <ROW COL> - Highlight all possible moves for piece in named position i.e. A1
+                    help - list available commands
+                """, getUserAuthStatusAsString(this.userAuthorized));
         System.out.print(printString);
     }
 
@@ -222,7 +286,7 @@ public class Console {
     }
 
     private void join(ArrayList<String> userArgs) throws ResponseException {
-        String color;
+//        String color;
         if (userArgs.get(1) != null) { color = userArgs.get(1).toUpperCase();
         } else { color = null; }
         int gameID = Integer.parseInt(userArgs.get(0));
@@ -233,12 +297,24 @@ public class Console {
             colorObj = ChessGame.TeamColor.BLACK;
         } else {
             System.out.print("No color selected, observing\n");
+            socket.joinObserverWS(this.userAuthToken,gameID);
         }
         server.joinGame(new JoinGameRequest(colorObj, gameID), this.userAuthToken);
+        inGame = true;
+        if (color == null) {
+            socket.joinPlayerWs(this.userAuthToken, gameID, colorObj);
+        }
+
         // Default board printing for phase 5
         //     Actual implementation will be done via websockets in phase 6
         System.out.print("GameID: " + gameID + "\n");
-        DrawChessBoard.ChessBoardToTerminal();
+//        ArrayList<ListGameInfo> games = server.listGames(this.userAuthToken).games();
+//        for (ListGameInfo curGame : games){
+//            if (curGame.gameID() == gameID){
+//                game.;
+//            }
+//        }
+//        redrawBoard();
     }
 
     private void observe(ArrayList<String> userArgs) throws ResponseException {
@@ -251,6 +327,64 @@ public class Console {
         System.out.print("Logged out.\n");
     }
 
+    public void leave() {
+        //if observing delete user from both hashmaps and go back to the logged in menu
+        socket.leave(this.userAuthToken, game.gameID());
+    }
+
+    public void resign() {
+        //confirms user wants to resign, if yes they lose and game is over
+        socket.resign(this.userAuthToken, game.gameID());
+    }
+
+    public void makeMove(ArrayList<String> userArgs) throws InvalidMoveException {
+        if (!userArgs.isEmpty()) {
+            ChessMove verified = null;
+            int col = userArgs.get(0).toLowerCase().charAt(0) - 'a' + 1;
+            int row = Integer.parseInt(userArgs.get(0).substring(1));
+            ChessPosition start = new ChessPosition(row, col);
+            int col1 = userArgs.get(1).toLowerCase().charAt(0) - 'a' + 1;
+            int row1 = Integer.parseInt(userArgs.get(1).substring(1));
+            ChessPosition end = new ChessPosition(row1, col1);
+            Collection<ChessMove> valids = game.game().validMoves(start);
+            for (ChessMove pos : valids) {
+                if (end.getColumn() == pos.getEndPosition().getColumn() && end.getRow() == pos.getEndPosition().getRow()) {
+                    verified = pos;
+                }
+            }
+            if (verified != null) {
+                socket.makeMove(this.userAuthToken, game.gameID(), verified);
+                System.out.println("made move");
+            } else {
+                System.out.println("not a valid move");
+            }
+
+//            ChessPiece.PieceType promoPiece = null;
+//            if (userArgs.size() == 5) {
+//                String promotionPieceType = userArgs.get(4);
+//                if (promotionPieceType.equalsIgnoreCase("ROOK")) {
+//                    promoPiece = ChessPiece.PieceType.ROOK;
+//                }
+//                if (promotionPieceType.equalsIgnoreCase("QUEEN")) {
+//                    promoPiece = ChessPiece.PieceType.QUEEN;
+//                }
+//                if (promotionPieceType.equalsIgnoreCase("BISHOP")) {
+//                    promoPiece = ChessPiece.PieceType.BISHOP;
+//                }
+//                if (promotionPieceType.equalsIgnoreCase("KNIGHT")) {
+//                    promoPiece = ChessPiece.PieceType.KNIGHT;
+//                }
+//            }
+
+        }
+    }
+
+    private void highlightValidMoves(ArrayList<String> userArgs){
+        int startCol = userArgs.get(0).toLowerCase().charAt(0) - 'a' + 1;
+        int startRow = Integer.parseInt(userArgs.get(1));
+        DrawChessBoard.PrintCurBoard(game.game(),color, new int[]{startRow, startCol});
+    }
+
     private void quit() throws ResponseException {
         if (this.userAuthorized) { logout(); }
         System.out.print("Quitting...\n\n");
@@ -258,7 +392,41 @@ public class Console {
     }
 
     private void help() {
-        if (!this.userAuthorized) { printLoggedOutMenu();
-        } else { printLoggedInMenu(); }
+        if (!this.userAuthorized) {
+            printLoggedOutMenu();
+        } else if (inGame){
+            printInGameMenu();
+        } else {
+            printLoggedInMenu();
+        }
+    }
+
+    private void redrawBoard(){
+        DrawChessBoard.PrintCurBoard(game.game(),color);
+    }
+
+    @Override
+    public void notify(String notification) {
+        ServerMessage msg = new Gson().fromJson(notification, ServerMessage.class);
+        switch(msg.getServerMessageType()){
+            case LOAD_GAME -> loadGame(notification);
+            case ERROR -> errorMessage(notification);
+            case NOTIFICATION -> notification(notification);
+        }
+    }
+    public void loadGame(String notification){
+        //save the game variable
+        LoadGame msg = new Gson().fromJson(notification, LoadGame.class);
+        game = msg.game;
+        redrawBoard();
+    }
+    public void errorMessage(String notification){
+        Error msg = new Gson().fromJson(notification, Error.class);
+        System.out.print("Error: " + msg.errorMessage);
+
+    }
+    public void notification(String notification){
+        Notification msg = new Gson().fromJson(notification, Notification.class);
+        System.out.println(msg.message);
     }
 }

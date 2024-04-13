@@ -18,6 +18,9 @@ public class ChessGame {
 
     public ChessGame() {
         isGameOver = false;
+        teamTurn = TeamColor.WHITE;
+        curBoard = new ChessBoard();
+        curBoard.resetBoard();
     }
 
     /**

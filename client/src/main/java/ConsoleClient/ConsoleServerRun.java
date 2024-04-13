@@ -1,5 +1,6 @@
 package ConsoleClient;
 
+import exception.ResponseException;
 import server.Server;
 import service.GameService;
 import dataAccess.DataAccessException;
@@ -16,9 +17,17 @@ class ConsoleServerRun {
         }
     }
 
-    private static final Console client = new Console();
+    private static final Console client;
 
-    private static void setUp() { server.run(8080); }
+    static {
+        try {
+            client = new Console(8080);
+        } catch (ResponseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void setUp() { Server.run(8080); }
 
     public static void closeServer() { server.stop(); }
 

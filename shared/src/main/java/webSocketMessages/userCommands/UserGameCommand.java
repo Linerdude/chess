@@ -22,15 +22,17 @@ public class UserGameCommand {
         RESIGN
     }
 
-    protected static CommandType commandType;
+    protected CommandType commandType;
 
     private final String authToken;
 
     public String getAuthString() {
+
         return authToken;
     }
 
-    public static CommandType getCommandType() {
+    public CommandType getCommandType() {
+
         return commandType;
     }
 

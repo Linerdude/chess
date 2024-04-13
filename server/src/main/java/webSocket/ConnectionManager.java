@@ -7,10 +7,11 @@ import webSocketMessages.userCommands.UserGameCommand;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ConnectionManager {
-    public final ConcurrentHashMap<String, Connection> connections = new ConcurrentHashMap<>();
+    public final HashMap<String, Connection> connections = new HashMap<>();
 
     public void add(String authToken, Session session) {
         var connection = new Connection(authToken, session);
@@ -26,7 +27,7 @@ public class ConnectionManager {
         for (var c : connections.values()) {
             if (c.session.isOpen()) {
                 if (!c.authToken.equals(excludeVisitorName)) {
-                    c.send(notification.toString());
+                    c.send(notification);
                 }
             } else {
                 removeList.add(c);
@@ -44,7 +45,8 @@ public class ConnectionManager {
             if (c.session.isOpen()) {
                 if (c.authToken.equals(authToken)) {
                     String not = new Gson().toJson(notification);
-                    c.send(not);
+                    System.out.println(not);
+                    c.send(notification);
                     return;
                 }
             }

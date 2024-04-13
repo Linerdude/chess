@@ -40,6 +40,7 @@ public class WebSocketHandler {
     public Map<Integer, String> gameOver = new HashMap<>();
 
     public WebSocketHandler(SQLDataAccess games, SQLDataAccess auths, SQLDataAccess users){
+        System.out.println("WSH init");
         this.auths = auths;
         this.games = games;
         this.users = users;
@@ -47,8 +48,8 @@ public class WebSocketHandler {
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException {
-        UserGameCommand action = new Gson().fromJson(message, UserGameCommand.class);
-        switch (UserGameCommand.getCommandType()) {
+        UserGameCommand curUserGameCommand = new Gson().fromJson(message, UserGameCommand.class);
+        switch (curUserGameCommand.getCommandType()) {
             case JOIN_PLAYER -> joinPlayer(message, session);
             case JOIN_OBSERVER -> joinObserver(message, session);
             case MAKE_MOVE -> makeMove(message,session);
@@ -80,6 +81,7 @@ public class WebSocketHandler {
                             Error notification = new Error(ServerMessage.ServerMessageType.ERROR, "player hasn't joined game properly");
                             ConnectionManager c = gameOrganizer.get(join.gameID);
                             c.clientNotify(auth.authToken(), notification);
+                            System.out.println("player hasn't joined correctly");
                         }
                     }else {
                         if (Objects.equals(auth.username(), gameInfo.blackUsername())) {
@@ -88,17 +90,20 @@ public class WebSocketHandler {
                             ConnectionManager c = gameOrganizer.get(join.gameID);
                             Error notification = new Error(ServerMessage.ServerMessageType.ERROR, "player hasn't joined game properly");
                             c.clientNotify(auth.authToken(), notification);
+                            System.out.println("player hasn't joined correctly");
                         }
                     }
                 } else {
                     ConnectionManager c = gameOrganizer.get(join.gameID);
                     Error notification = new Error(ServerMessage.ServerMessageType.ERROR, "Bad gameID");
                     c.clientNotify(auth.authToken(), notification);
+                    System.out.println("bad gameID");
                 }
             }else{
                 ConnectionManager c = gameOrganizer.get(join.gameID);
                 Error notification = new Error(ServerMessage.ServerMessageType.ERROR, "Bad authtoken");
                 c.clientNotify(authToken,notification);
+                System.out.println("bad auth");
             }
         } catch (IOException | DataAccessException e) {
             System.out.println(e.getMessage());
@@ -118,6 +123,10 @@ public class WebSocketHandler {
         gamesAndUsers.put(gameInfo.gameID(), clientsInGame);
         Notification notif = new Notification(ServerMessage.ServerMessageType.NOTIFICATION, message);
         ConnectionManager c = gameOrganizer.get(join.gameID);
+//        for (String client : clientsInGame){
+////            c.broadcast(client, notif);
+//            c.clientNotify(client, notification);
+//        }
         c.broadcast(auth.authToken(), notif);
         c.clientNotify(auth.authToken(), notification);
     }

@@ -9,24 +9,36 @@ import webSocket.WebSocketHandler;
 
 public class Server {
 
-    SQLDataAccess authDAO;
-    SQLDataAccess gameDAO;
-    SQLDataAccess userDAO;
-    WebSocketHandler webSocketHandler;
+    static SQLDataAccess authDAO;
+    static SQLDataAccess gameDAO;
+    static SQLDataAccess userDAO;
+    static WebSocketHandler webSocketHandler;
 
     public Server (){
         try {
-            SQLDataAccess authDAO = new SQLDataAccess();
-            SQLDataAccess gameDAO = new SQLDataAccess();
-            SQLDataAccess userDAO = new SQLDataAccess();
+            authDAO = new SQLDataAccess();
+            gameDAO = new SQLDataAccess();
+            userDAO = new SQLDataAccess();
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }
 
-        WebSocketHandler webSocketHandler = new WebSocketHandler(authDAO,gameDAO,userDAO);
+        webSocketHandler = new WebSocketHandler(authDAO,gameDAO,userDAO);
     }
 
-    public int run(int desiredPort) {
+    public static void main(String [] args){
+        try {
+            authDAO = new SQLDataAccess();
+            gameDAO = new SQLDataAccess();
+            userDAO = new SQLDataAccess();
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+        webSocketHandler = new WebSocketHandler(authDAO,gameDAO,userDAO);
+        Server.run(8080);
+    }
+
+    public static int run(int desiredPort) {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
@@ -34,6 +46,7 @@ public class Server {
         // Register your endpoints and handle exceptions here.
         //
         Spark.webSocket("/connect", webSocketHandler);
+        Spark.init();
         Spark.post("/user", (req, res) -> new AuthorizationHandler(req, res).register());
         Spark.post("/session", (req, res) -> new AuthorizationHandler(req, res).login());
         Spark.delete("/session", (req, res) -> new AuthorizationHandler(req, res).logout());
